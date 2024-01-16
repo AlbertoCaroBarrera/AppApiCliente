@@ -1,0 +1,26 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+
+{% for reserva in reservas %}
+    
+    <h1>Reserva:</h1>
+    <ul>
+        <li>Nombre del cliente: {{reserva.cliente.nombre}}</li>
+        <li>Correo electronico del cliente: {{reserva.cliente.correo_electronico}}</li>
+        <li>Telefono del cliente: {{reserva.cliente.telefono}}</li>
+        <li>Direccion del cliente: {{reserva.cliente.direccion}}</li>
+        <br>
+        <li>Fecha de entrada de la reserva: {{reserva.fecha_entrada|date:"d-m-Y"}}</li>
+        <li>Fecha de salida de la reserva: {{reserva.fecha_salida|date:"d-m-Y"}}</li>
+        <br>
+        <li>Habitacion de reserva: {{reserva.habitacion.numero_hab}} </li>
+        <li>Tipo de habitacion: {{reserva.habitacion.tipo}} </li>
+        <li>Precio noche de habitacion: {{reserva.habitacion.precio_noche}} </li>
+    </ul>
+    
+    {% empty %}
+        <h1>Lo sentimos pero no hay reserva</h1>
+{% endfor %}
+
+{% endblock contenido %}

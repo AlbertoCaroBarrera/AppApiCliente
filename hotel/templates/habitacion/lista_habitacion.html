@@ -1,0 +1,21 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+
+{% for habitacion in habitacion_mostrar %}
+
+    <ul>
+        <li>
+            Numero de habitacion: {{habitacion.numero_hab}}
+        </li>
+        <li>
+            Tipo de habitacion: {{habitacion.tipo}}
+        </li>
+        <li>
+            Precio por noche de la habitacion: {{habitacion.precio_noche}}
+        </li>
+    </ul>
+
+{% endfor %}
+
+{% endblock contenido %}

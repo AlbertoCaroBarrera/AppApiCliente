@@ -1,0 +1,25 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+
+    <ul>
+        <li>Nombre del evento: {{puntuaciones.evento.nombre}}</li>
+        <li>Dia y hora del evento: {{puntuaciones.evento.hora_inicio|date:"d-m-Y"}}</li>
+        <li>Dia y hora del final del evento: {{puntuaciones.evento.hora_final|date:"d-m-Y"}}</li>
+        <li>Ubicacion del evento: {{puntuaciones.evento.ubicacion}}</li>
+        <br>
+        <li>Comentario del evento: {{puntuaciones.comentario}}</li>
+        <li>Votacion del evento: {{puntuaciones.puntuacion}}</li>
+        <li>Fecha del comentario: {{puntuaciones.fecha|date:"d-m-Y"}} </li>
+        <br>
+        <li>Nombre del cliente: {{puntuaciones.cliente.nombre}}</li>
+        <li>Correo electronico del cliente: {{puntuaciones.cliente.correo_electronico}}</li>
+        <li>Telefono del cliente: {{puntuaciones.cliente.telefono}}</li>
+        <li>Direccion del cliente: {{puntuaciones.cliente.direccion}}</li>
+    </ul>
+
+
+
+
+
+{% endblock contenido %}

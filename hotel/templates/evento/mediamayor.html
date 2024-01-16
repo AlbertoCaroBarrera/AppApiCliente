@@ -1,0 +1,25 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+{% for evento in eventos %}
+    <h1>Evento:</h1>
+    <ul>
+        <li>Nombre del evento: {{evento.nombre}}</li>
+        <li>Hora inicio del evento: {{evento.hora_inicio|date:"d-m-Y"}}</li>
+        <li>Hora final del evento: {{evento.hora_final|date:"d-m-Y"}}</li>
+        <li>Ubicacion del evento: {{evento.ubicacion}}</li>
+    </ul>
+    {% for reserva in evento.reserva.all %}
+        <h2>Reservas</h2>
+        <ul>
+            <li>Nombre del cliente que ha hecho la reserva{{reserva.cliente.nombre}}</li>
+            <li>Numero de la habitacion que el cliente que ha reservado{{reserva.habitacion.numero_hab}}</li>
+            <li>{{reserva.fecha_entrada|date:"d-m-Y"}}</li>
+            <li>{{reserva.fecha_salida|date:"d-m-Y"}}</li>
+        </ul>
+    {%endfor%}
+    {% empty %}
+        <h1>Lo sentimos pero no hay evento</h1>
+{% endfor %}
+
+{% endblock contenido %}

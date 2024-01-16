@@ -1,0 +1,27 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+{% for empleado in empleados %}
+    <h1>Empleado</h1>
+    <ul>
+        <li>Nombre:{{empleado.nombre}}</li>
+        
+    </ul>
+    {% for checkin in empleado.empleado_checkin.all %}
+        <ul>
+            <li>Fecha de check in realizada: {{checkin.fecha_hora_check_in|date:"d-m-Y"}}</li>
+        </ul>
+        
+    {%endfor%}
+    
+    {% for checkout in empleado.empleado_checkout.all %}
+        <ul>
+            <li>Fecha de check out realizada: {{checkout.fecha_hora_check_out|date:"d-m-Y"}}</li>
+        </ul>
+        
+    {%endfor%}
+    {% empty %}
+        <h1>Lo sentimos pero no hay empleado</h1>
+{% endfor %}
+
+{% endblock contenido %}

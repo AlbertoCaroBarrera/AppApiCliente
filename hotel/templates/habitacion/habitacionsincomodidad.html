@@ -1,0 +1,11 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+{% for habitacion in habitaciones %}
+    <h1>Habitación</h1>
+    {% include "habitacion/monstrar_habitacion.html" with habitaciones=habitacion %}
+    {% empty %}
+        <h1>Lo sentimos pero no hay habitacion</h1>
+{% endfor %}
+
+{% endblock contenido %}

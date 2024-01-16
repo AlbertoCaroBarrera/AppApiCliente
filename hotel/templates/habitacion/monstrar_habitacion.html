@@ -1,0 +1,35 @@
+<ul>
+    <li>Numero de la habitacion: {{habitaciones.numero_hab}}</li>
+    <li>Tipo de habitacion: {{habitaciones.tipo}}</li>
+    <li>Precio por noche: {{habitaciones.precio_noche}}</li>
+
+    <h4>Reservas</h4>
+    <ul>
+        {% for reserva in habitaciones.habitacion_reserva.all %}
+            <li>cliente: {{reserva.cliente.nombre}}</li>
+            <li>fecha entrada: {{reserva.fecha_entrada|date:"d-m-Y"}}</li>
+            <li>fecha salida: {{reserva.fecha_salida|date:"d-m-Y"}} </li>
+            <br>
+        {%endfor%}
+    </ul>
+    <h4>Comentarios</h4>
+    <ul>
+        {% for comentarios in habitaciones.habitacion_comentario.all %}
+            <li>cliente: {{comentarios.cliente.nombre}}</li>
+            <li>fecha entrada: {{comentarios.habitacion}}</li>
+            <li>fecha salida: {{comentarios.puntuacion}} </li>
+            <li>Comentario: {{comentarios.comentario}}</li>
+            <li>Fecha: {{comentarios.fecha|date:"d-m-Y"}}</li>
+            <br>
+        {%endfor%}
+    </ul>
+    <h4>Comodidades</h4>
+    <ul>
+        {% for comodidad in habitaciones.habitacion_comodidad.all %}
+            <li>nombre: {{comodidad.nombre}}</li>
+            <li>descripcion: {{comodidad.descripcion}}</li>
+
+            <br>
+        {%endfor%}
+    </ul>
+</ul>

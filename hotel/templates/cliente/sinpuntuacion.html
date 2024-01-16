@@ -1,0 +1,18 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+{% for usuario in usuarios %}
+    <h1>Cliente sin voto:</h1>
+    <ul>
+        <li>Nombre del cliente: {{usuario.nombre}}</li>
+        <li>Correo electronico del cliente: {{usuario.correo_electronico}}</li>
+        <li>Teléfono del cliente: {{usuario.telefono}}</li>
+        <li>Direccion del cliente: {{usuario.direccion}}</li>
+
+    </ul>
+    
+{% empty %}
+    <h1>Lo sentimos pero no hay usuarios</h1>
+{% endfor %}
+
+{% endblock contenido %}

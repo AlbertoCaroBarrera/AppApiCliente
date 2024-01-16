@@ -1,0 +1,37 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<h1>Estos son nuestros clientes:</h1>
+    {%for cliente in clientes%}
+    <h2>Nombre cliente:
+        {{cliente.nombre}}
+    </h2>
+    <h3>Correo: {{cliente.correo_electronico}}</h3>
+    <h3>Telefono: {{cliente.telefono}}</h3>
+    <h3>direccion: {{cliente.direccion}} </h3>
+
+
+    <h4>Reservas</h4>
+    <ul>
+        {% for reserva in cliente.cliente_reserva.all %}
+            <li>fecha entrada: {{reserva.fecha_entrada|date:"d-m-Y"}}</li>
+            <li>fecha salida: {{reserva.fecha_salida|date:"d-m-Y"}} </li>
+            <li>Habitacion: {{reserva.habitacion.numero_hab}}</li>
+            <br>
+        {%endfor%}
+    </ul>
+    <h4>Comentarios</h4>
+    <ul>
+        {% for comentario in cliente.cliente_comentario.all %}
+            <li>Puntuacion: {{comentario.puntuacion}}</li>
+            <li>Comentario: {{comentario.comentario}} </li>
+            <li>Fecha: {{comentario.fecha|date:"d-m-Y"}}</li>
+            <br>
+        {%endfor%}
+    </ul>
+
+    <p>----------------------------------------------------</p>
+    {% empty %}
+    <h1>Lo sentimos pero no hay cliente</h1>
+    {% endfor %}
+{% endblock contenido %}
+

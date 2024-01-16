@@ -1,0 +1,10 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+    <ul>
+        <li>El cliente es: {{estancias.reserva.cliente.nombre}}</li>
+        <li>La habitacion del cliente era: {{estancias.reserva.habitacion.numero_hab}}</li>
+        <li>La fecha de salida fue: {{estancias.fecha_salida|date:"d-m-Y"}}</li>
+    </ul>
+
+{% endblock contenido %}

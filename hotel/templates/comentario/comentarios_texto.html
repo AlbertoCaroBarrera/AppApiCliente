@@ -1,0 +1,17 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+{% for comentario in comentarios %}
+    <ul>
+        <li>Cliente que realiza el comentario: {{comentario.cliente.nombre}}</li>
+        <li>Habitacion sobre la que se comenta: {{comentario.habitacion.numero_hab}}</li>
+        <li>Puntuacion del comentario: {{comentario.puntuacion}} </li>
+        <li>Comentario: {{comentario.comentario}}</li>
+        <li>Fecha del comentario: {{comentario.fecha|date:"d-m-Y"}} </li>
+    </ul>
+    
+    {% empty %}
+        <h1>Lo sentimos pero no hay comentarios</h1>
+{% endfor %}
+
+{% endblock contenido %}

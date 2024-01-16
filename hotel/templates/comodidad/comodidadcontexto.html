@@ -1,0 +1,26 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+
+{% for comodidad in comodidades %}
+    <ul>
+        <h1>Comodidad</h1>
+        <li>Nombre de la comodidad: {{comodidad.nombre}}</li>
+        <li>Descripcion de la comodidad: {{comodidad.descripcion}} </li>
+    </ul>
+    {% for habitacion in comodidad.habitacion.all %}
+        <h2>Habitacion con la comodidad:</h2>
+        <ul>
+            <li>Numero de la habitacion: {{habitacion.numero_hab}}</li>
+            <li>Tipo de habitacion: {{habitacion.tipo}} </li>
+            <li>Precio por noche de la habitacion: {{habitacion.precio_noche}} </li>
+        </ul>
+
+        
+    {% endfor %}
+
+    {% empty %}
+        <h1>Lo sentimos pero no hay comodidades</h1>
+{% endfor %}
+
+{% endblock contenido %}

@@ -1,0 +1,34 @@
+{% extends "principal.html" %}
+{% load bootstrap5 %}
+
+
+
+
+{%block contenido%}
+{% bootstrap_css %}
+<div class="container">
+<form action="{% url 'cliente_create' %}" method="POST">
+
+    {% csrf_token %}
+    
+    <div class="mb-4">
+        {% bootstrap_field formulario_cliente.nombre %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario_cliente.correo_electronico %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario_cliente.telefono %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario_cliente.direccion %}
+    </div>
+
+    <button type="submit">Enviar</button>
+
+</form>
+</div>
+{%endblock%}

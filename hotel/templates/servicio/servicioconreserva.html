@@ -1,0 +1,16 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+    {% for servicio in servicios %}
+        <h1>Servicio:</h1>
+        <ul>
+            <li>Nombre del servicio: {{servicio.nombre}}</li>
+            <li>Descripcion del servicio: {{servicio.descripcion}} </li>
+            <li>Precio del servicio: {{servicio.precio}} </li>
+        </ul>
+        
+        {% empty %}
+        <h1>Lo sentimos pero no hay servicios</h1>
+    {% endfor %}
+
+{% endblock contenido %}

@@ -1,0 +1,78 @@
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #111317;
+    --primary-color-light: #1f2125;
+    --primary-color-extra-light: #35373b;
+    --secondary-color: #f9ac54;
+    --secondary-color-dark: #d79447;
+    --text-light: #d1d5db;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--primary-color-light);
+    color: var(--text-light);
+}
+
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #111317;
+    padding: 2rem 1rem;
+
+}
+
+.links_navagacion {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+.link a {
+    position: relative;
+    padding-bottom: 0.75rem;
+    color: var(--white);
+}
+
+.link a::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 0;
+    left: 0;
+    bottom: 0;
+    background-color: var(--secondary-color);
+    transition: 0.3s;
+}
+
+
+.link a:hover::after {
+    width: 50%;
+}
+
+
+.pie-pagina{
+
+    width: 100%;
+    background-color: var(--primary-color);
+    border-top: 1px solid var(--white);
+}
+.pie-pagina .grupo-2{
+    border-top: 1px solid var(--white);
+    padding: 15px 10px;
+    text-align: center;
+    color: #fff;
+}

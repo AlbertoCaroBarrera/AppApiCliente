@@ -1,0 +1,36 @@
+{% extends 'principal.html' %}
+
+{% block contenido %}
+<h1>Lista de Promociones</h1>
+<ul>
+    {% for promocion in promociones %}
+        <li>Nombre de la promocion: {{ promocion.nombre }}</li>
+        <li>Descripcion de la promocion: {{ promocion.descripcion }}</li>
+        <li>Descuento de la promocion: {{ promocion.descuento }}</li>
+        {% for usuario in promocion.usuario.all %}
+            Nombre del usuario: {{usuario.nombre}}
+        {% endfor %}
+        <li>Fecha de la promocion: {{ promocion.fecha_fin }}</li>
+        {% load bootstrap_icons %}
+        <div class="row btn-group">
+            <div class="mb-2">
+                <button type="button" 
+                        class="btn btn-outline-primary"> 
+                        <a href="{% url 'promocion_editar' promocion.id %}" ><span>{% bs_icon 'pencil' %}</span></a>
+                </button>
+            </div>
+            <div class="mb-2">
+                <form action = "{% url 'promocion_eliminar' promocion.id %}" method = "post"> 
+                    {% csrf_token %}
+                    <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                        <span>{% bs_icon 'trash' %}</span>
+                    </button> 
+                </form>
+            </div>
+        </div>
+        <div>--------------------------------------------------------------------------------------------------------------------</div>
+    {% endfor %}
+</ul>
+
+{% endblock contenido %}
+
