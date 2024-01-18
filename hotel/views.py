@@ -13,3 +13,8 @@ def clientes_lista_api(request):
     response = requests.get('http://127.0.0.1:8000/api/v1/clientes')
     clientes = response.json()
     return render(request, 'cliente/lista_api.html',{"clientes_mostrar":clientes})
+
+def reservas_lista_api(request):
+    response = requests.get('http://127.0.0.1:8000/api/v1/reservas')
+    reservas = response.json()
+    return render(request,'reserva/reserva_list.html',{"reservas_mostrar":reservas})

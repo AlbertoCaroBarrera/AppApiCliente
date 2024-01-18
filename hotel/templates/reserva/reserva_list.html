@@ -1,0 +1,13 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+    {% for reserva in reservas_mostrar %}
+    
+        {{reserva.cliente}}
+        {{reserva.habitacion}}
+        Fecha de entrada: {{reserva.fecha_entrada}}
+        Fecha de salida: {{reserva.fecha_salida}}
+
+    {% endfor %}
+
+{% endblock contenido %}
