@@ -3,6 +3,11 @@
         <li class="link">
             <a href="{% url 'index' %}">Inicio</a>
         </li>
-
+        <li>
+            <form action="{% url 'cliente_busqueda_simple' %}" class="d-flex mt-3" role="search" method="GET">
+                <input name="textoBusqueda" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-light btn-outline-dark" type="submit">Buscar</button>
+            </form>
+        </li>
 </nav>
 
