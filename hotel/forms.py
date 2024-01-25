@@ -7,3 +7,8 @@ from django.contrib.auth.forms import UserCreationForm
 
 class BusquedaClienteForm(forms.Form):
     textoBusqueda = forms.CharField(required=True)
+    
+    
+class BusquedaAvanzadaClienteForm(forms.Form):
+    textoBusqueda = forms.CharField(required=False)
+    telefono = forms.IntegerField(required=False)
