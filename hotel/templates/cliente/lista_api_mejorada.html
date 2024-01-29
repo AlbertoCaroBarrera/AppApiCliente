@@ -1,0 +1,22 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+<h1 class="display-3">Lista de clientes</h1>
+<div class="row">
+    {% for cliente in clientes_mostrar %}
+    
+    <div class="col-sm-4 mb-2">
+        <p>nombre: {{cliente.nombre}} </p>
+        <p>correo: {{cliente.correo_electronico}} </p>
+        <p>telefono: {{cliente.telefono}} </p>
+        <p>direccion: {{cliente.direccion}} </p>
+    </div>
+    {%empty%}
+    <h1>Lo sentimos no hay clientes</h1>
+    {% endfor %}
+</div>
+
+
+
+
+{% endblock contenido %}
