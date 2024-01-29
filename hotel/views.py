@@ -6,21 +6,29 @@ from django.contrib import messages
 import requests
 from django.core import serializers
 # Create your views here.
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+import environ
+import os
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+
 def index(request):
     return render(request,'index.html')
 
 def crear_cabecera():
-    return {'Authorization': 'Bearer QIQOCrVZeSbfHJLK7cGPmM6kDIzmbq'}
+    return {'Authorization': f'Bearer {env("BEARER")}'}
 
 def clientes_lista_api(request):
     headers =  crear_cabecera()
-    response = requests.get('http://127.0.0.1:8000/api/v1/clientes',headers=headers)
+    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes', headers=headers)
     clientes = response.json()
     return render(request, 'cliente/lista_api.html',{"clientes_mostrar":clientes})
 
 def reservas_lista_api(request):
     headers =  crear_cabecera()
-    response = requests.get('http://127.0.0.1:8000/api/v1/reservas',headers=headers)
+    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/reservas',headers=headers)
     reservas = response.json()
     return render(request,'reserva/reserva_list.html',{"reservas_mostrar":reservas})
 
@@ -31,7 +39,7 @@ def cliente_busqueda_simple(request):
     if formulario.is_valid():
         headers = crear_cabecera()
         response = requests.get(
-            'http://127.0.0.1:8000/api/v1/cliente_buscar',
+            f'{env("DOMINIO")}{env("VERSION")}/cliente_buscar',
             headers = headers,
             params = formulario.cleaned_data
         )
@@ -51,7 +59,7 @@ def cliente_busqueda_avanzada(request):
         try:
             headers = crear_cabecera()
             response = requests.get(
-                'http://127.0.0.1:8000/api/v1/cliente_busqueda_avanzada',
+                f'{env("DOMINIO")}{env("VERSION")}/cliente_busqueda_avanzada',
                 headers=headers,
                 params=formulario.data
             )             
