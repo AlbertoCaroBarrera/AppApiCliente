@@ -18,11 +18,11 @@ def index(request):
     return render(request,'index.html')
 
 def crear_cabecera():
-    return {'Authorization': f'Bearer {env("BEARER")}'}
+    return {'Authorization': f'Bearer {env("NEW_TOKEN")}'}
 
 def usuarios_lista_api(request):
     headers = crear_cabecera()
-    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/usuarios/', headers=headers)
+    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/usuarios', headers=headers)
     usuarios = response.json()
     return render(request, 'usuario/lista_api.html', {"usuarios_mostrar": usuarios})
 
@@ -34,19 +34,19 @@ def clientes_lista_api(request):
 
 def clientes_lista_api_mejorada(request):
     headers = crear_cabecera()
-    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes/mejorado/', headers=headers)
+    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes/mejorado', headers=headers)
     clientes = response.json()
     return render(request, 'cliente/lista_api_mejorada.html', {"clientes_mostrar": clientes})
 
 def habitaciones_lista_api(request):
     headers = crear_cabecera()
-    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones/', headers=headers)
+    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones', headers=headers)
     habitaciones = response.json()
     return render(request, 'habitacion/habitacion_list.html', {"habitaciones_mostrar": habitaciones})
 
 def habitaciones_lista_api_mejorada(request):
     headers = crear_cabecera()
-    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones/mejorado/', headers=headers)
+    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones/mejorado', headers=headers)
     habitaciones = response.json()
     return render(request, 'habitacion/habitacion_list_mejorada.html', {"habitaciones_mostrar": habitaciones})
 
@@ -58,7 +58,7 @@ def reservas_lista_api(request):
 
 def reservas_lista_api_mejorada(request):
     headers = crear_cabecera()
-    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/reservas/mejorado/', headers=headers)
+    response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/reservas/mejorado', headers=headers)
     reservas = response.json()
     return render(request, 'reserva/reserva_list_mejorada.html', {"reservas_mostrar": reservas})
 
