@@ -37,6 +37,30 @@ def clientes_lista_api_mejorada(request):
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes/mejorado', headers=headers)
     clientes = response.json()
     return render(request, 'cliente/lista_api_mejorada.html', {"clientes_mostrar": clientes})
+class helper:
+
+    def obtener_clientes_select():
+        #obtener todos los clientes
+        headers = crear_cabecera()
+        response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes', headers=headers)
+        clientes = response.json()
+        
+        lista_clientes = [("","Ninguna")]
+        for cliente in clientes:
+            lista_clientes.append((cliente['id'], cliente['nombre']))
+        return lista_clientes
+
+    def obtener_habitaciones_select():
+        #obtener todas las habitaciones
+        headers = crear_cabecera()
+        response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones', headers=headers)
+        habitaciones = response.json()
+        
+        lista_habitaciones = [("","Ninguna")]
+        for habitacion in habitaciones:
+            lista_habitaciones.append((habitacion['id'], habitacion['nombre']))
+        return lista_habitaciones
+
 
 def habitaciones_lista_api(request):
     headers = crear_cabecera()
