@@ -1,0 +1,29 @@
+{% extends "estructura/principal.html" %}
+
+{% block contenido %}
+<form action = "" method = "post"> 
+    
+    {% load bootstrap5 %}
+    {% csrf_token %} 
+    
+    <div class="mb-4">
+        {% bootstrap_field formulario.cliente show_label=True %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.habitacion show_label=True %}
+    </div>
+    
+    <div class="mb-4">
+        {% bootstrap_field formulario.fecha_entrada show_label=True %}
+    </div>
+    
+    <div class="mb-4">
+        {% bootstrap_field formulario.fecha_salida show_label=True %}
+    </div>
+
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    {% endbuttons %}
+</form>
+{% endblock %}

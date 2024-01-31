@@ -60,6 +60,10 @@ class helper:
         for habitacion in habitaciones:
             lista_habitaciones.append((habitacion['id'], habitacion['nombre']))
         return lista_habitaciones
+    
+def reserva_crear(request):
+    
+    
 
 
 def habitaciones_lista_api(request):
