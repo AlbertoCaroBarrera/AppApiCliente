@@ -12,7 +12,16 @@ class BusquedaClienteForm(forms.Form):
 class BusquedaAvanzadaClienteForm(forms.Form):
     textoBusqueda = forms.CharField(required=False)
     telefono = forms.IntegerField(required=False)
+
+class BusquedaAvanzadaHabitacionForm(forms.Form):
+    textoBusqueda = forms.CharField(required=False)
     
+    numero_hab = forms.IntegerField(required=False)
+    
+    precio_noche = forms.FloatField(required=False)
+
+
+
 class ReservaForm(forms.Form):
     fecha_entrada = forms.DateTimeField(label="Fecha de entrada")
 
