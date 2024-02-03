@@ -34,7 +34,9 @@ def index(request):
     return render(request,'index.html')
 
 def crear_cabecera():
-    return {'Authorization': f'Bearer {env("NEW_TOKEN")}'}
+    #return {'Authorization': f'Bearer {env("NEW_TOKEN")}'}
+    return {'Authorization': f'Bearer {env("BEARER")}'}
+
 
 def usuarios_lista_api(request):
     headers = crear_cabecera()
@@ -172,6 +174,42 @@ def habitacion_busqueda_avanzada(request):
     else:
         formulario = BusquedaAvanzadaHabitacionForm(None)
     return render(request, 'habitacion/habitacion_busqueda.html',{"formulario":formulario})
+
+def reserva_busqueda_avanzada(request):
+    if(len(request.GET) > 0):
+        formulario = BusquedaAvanzadaReservaForm(request.GET)
+        
+        try:
+            headers = crear_cabecera()
+            response = requests.get(
+                f'{env("DOMINIO")}{env("VERSION")}/reserva_busqueda_avanzada',
+                headers=headers,
+                params=formulario.data
+            )             
+            if(response.status_code == requests.codes.ok):
+                reservas = formatear_respuesta(response)
+                return render(request, 'reserva/lista_api.html',
+                                {"reservas_mostrar":reservas})
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = formatear_respuesta(response)
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'reserva/reserva_busqueda.html',
+                            {"formulario":formulario,"errores":errores})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    else:
+        formulario = BusquedaAvanzadaReservaForm(None)
+    return render(request, 'reserva/reserva_busqueda.html',{"formulario":formulario})
 
 
 #Páginas de Error

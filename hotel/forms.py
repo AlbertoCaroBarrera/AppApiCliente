@@ -20,6 +20,11 @@ class BusquedaAvanzadaHabitacionForm(forms.Form):
     
     precio_noche = forms.FloatField(required=False)
 
+class BusquedaAvanzadaReservaForm(forms.Form):
+
+    textoBusqueda = forms.CharField(required=False)
+    fecha_desde = forms.DateField(required=False, label='Fecha de entrada desde')
+    fecha_hasta = forms.DateField(required=False, label='Fecha de entrada hasta')
 
 
 class ReservaForm(forms.Form):

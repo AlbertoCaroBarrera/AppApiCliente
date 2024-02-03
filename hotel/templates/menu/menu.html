@@ -1,13 +1,86 @@
-<nav>
-    <ul class="links_navagacion">
-        <li class="link">
-            <a href="{% url 'index' %}">Inicio</a>
-        </li>
-        <li>
-            <form action="{% url 'cliente_busqueda_simple' %}" class="d-flex mt-3" role="search" method="GET">
-                <input name="textoBusqueda" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-light btn-outline-dark" type="submit">Buscar</button>
-            </form>
-        </li>
-</nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 d-flex justify-content-evenly">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Inicio</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Habitacion</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 
+              <li>
+                <a class="dropdown-item" href="{% url "habitacion_busqueda_avanzada" %}">Busqueda avanzada de una habitacion</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Clientes</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li>
+                    <form action="{% url 'cliente_busqueda_simple' %}" class="d-flex mt-3" role="search" method="GET">
+                        <input name="textoBusqueda" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-light btn-outline-dark" type="submit">Buscar</button>
+                    </form>
+                </li>
+
+              <li>
+                <a class="dropdown-item" href="{% url "cliente_busqueda_avanzada" %}">Busqueda avanzada cliente</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Reservas</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+
+              <li>
+                <a class="dropdown-item" href="{% url "reserva_busqueda_avanzada" %}">Busqueda avanzada de reservas</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Servicios</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+
+              <li>
+                <a class="dropdown-item" href=""></a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Empleados</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href=""></a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Comentarios</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href=""></a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Promocion</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href=""></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            {% if not request.user.is_authenticated %}
+            <a class="btn btn-outline-warning" href="">Registrarse</a>
+            {% endif %}
+          </li>
+  
+        </ul>
+      </div>
+    </div>
+  </nav>
+  

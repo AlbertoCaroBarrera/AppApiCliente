@@ -4,7 +4,7 @@
 {% block contenido %}
 
 
-    <form action = "{% url 'habitacion_busqueda_avanzada' %}" method = "GET">
+    <form action = "{% url 'reserva_busqueda_avanzada' %}" method = "GET">
        
         {% csrf_token %}
 
@@ -14,12 +14,12 @@
         </div>
 
         <div class="mb-4">
-            {% bootstrap_field formulario.numero_hab show_label=True %}
+            {% bootstrap_field formulario.fecha_desde show_label=True %}
         </div>
 
 
         <div class="mb-4">
-            {% bootstrap_field formulario.precio_noche show_label=True %}
+            {% bootstrap_field formulario.fecha_hasta show_label=True %}
         </div>
 
         {% buttons %}
