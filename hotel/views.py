@@ -13,6 +13,22 @@ import os
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+def formatear_respuesta(response):
+    # Implementa la lógica para formatear la respuesta según su tipo
+    content_type = response.headers.get('content-type', '').lower()
+
+    if 'json' in content_type:
+        return response.json()
+    elif 'xml' in content_type:
+        # Implementa la lógica para parsear XML
+        pass
+    elif 'html' in content_type:
+        # Implementa la lógica para manejar HTML
+        pass
+    else:
+        # Manejar otros tipos de contenido según sea necesario
+        pass
+
 
 def index(request):
     return render(request,'index.html')
@@ -22,44 +38,46 @@ def crear_cabecera():
 
 def usuarios_lista_api(request):
     headers = crear_cabecera()
+    # En caso de que tengamos un dominio o una version diferente, la modificamos directamente en el .env y será modificado en todas views   
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/usuarios', headers=headers)
-    usuarios = response.json()
+    usuarios = formatear_respuesta(response)
     return render(request, 'usuario/lista_api.html', {"usuarios_mostrar": usuarios})
 
 def clientes_lista_api(request):
     headers =  crear_cabecera()
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes', headers=headers)
-    clientes = response.json()
+    clientes = formatear_respuesta(response)
     return render(request, 'cliente/lista_api.html',{"clientes_mostrar":clientes})
 
 def clientes_lista_api_mejorada(request):
     headers = crear_cabecera()
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes/mejorado', headers=headers)
-    clientes = response.json()
+    clientes = formatear_respuesta(response)
     return render(request, 'cliente/lista_api_mejorada.html', {"clientes_mostrar": clientes})
+
 
 def habitaciones_lista_api(request):
     headers = crear_cabecera()
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones', headers=headers)
-    habitaciones = response.json()
+    habitaciones = formatear_respuesta(response)
     return render(request, 'habitacion/habitacion_list.html', {"habitaciones_mostrar": habitaciones})
 
 def habitaciones_lista_api_mejorada(request):
     headers = crear_cabecera()
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones/mejorado', headers=headers)
-    habitaciones = response.json()
+    habitaciones = formatear_respuesta(response)
     return render(request, 'habitacion/habitacion_list_mejorada.html', {"habitaciones_mostrar": habitaciones})
 
 def reservas_lista_api(request):
     headers =  crear_cabecera()
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/reservas',headers=headers)
-    reservas = response.json()
+    reservas = formatear_respuesta(response)
     return render(request,'reserva/reserva_list.html',{"reservas_mostrar":reservas})
 
 def reservas_lista_api_mejorada(request):
     headers = crear_cabecera()
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/reservas/mejorado', headers=headers)
-    reservas = response.json()
+    reservas = formatear_respuesta(response)
     return render(request, 'reserva/reserva_list_mejorada.html', {"reservas_mostrar": reservas})
 
 
@@ -73,7 +91,7 @@ def cliente_busqueda_simple(request):
             headers = headers,
             params = formulario.cleaned_data
         )
-        clientes = response.json()
+        clientes = formatear_respuesta(response)
         print(clientes)
         return render(request,'cliente/lista_api.html',{"clientes_mostrar":clientes})
     if ('HTTP_REFERER' in request.META):
@@ -82,6 +100,7 @@ def cliente_busqueda_simple(request):
         return redirect("index")
     
 from requests.exceptions import HTTPError
+
 def cliente_busqueda_avanzada(request):
     if(len(request.GET) > 0):
         formulario = BusquedaAvanzadaClienteForm(request.GET)
@@ -94,7 +113,7 @@ def cliente_busqueda_avanzada(request):
                 params=formulario.data
             )             
             if(response.status_code == requests.codes.ok):
-                clientes = response.json()
+                clientes = formatear_respuesta(response)
                 return render(request, 'cliente/lista_api.html',
                                 {"clientes_mostrar":clientes})
             else:
@@ -103,7 +122,7 @@ def cliente_busqueda_avanzada(request):
         except HTTPError as http_err:
             print(f'Hubo un error en la petición: {http_err}')
             if(response.status_code == 400):
-                errores = response.json()
+                errores = formatear_respuesta(response)
                 for error in errores:
                     formulario.add_error(error,errores[error])
                 return render(request, 
@@ -117,6 +136,43 @@ def cliente_busqueda_avanzada(request):
     else:
         formulario = BusquedaAvanzadaClienteForm(None)
     return render(request, 'cliente/cliente_busqueda.html',{"formulario":formulario})
+
+def habitacion_busqueda_avanzada(request):
+    if(len(request.GET) > 0):
+        formulario = BusquedaAvanzadaHabitacionForm(request.GET)
+        
+        try:
+            headers = crear_cabecera()
+            response = requests.get(
+                f'{env("DOMINIO")}{env("VERSION")}/habitacion_busqueda_avanzada',
+                headers=headers,
+                params=formulario.data
+            )             
+            if(response.status_code == requests.codes.ok):
+                habitaciones = formatear_respuesta(response)
+                return render(request, 'habitacion/lista_api.html',
+                                {"habitaciones_mostrar":habitaciones})
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = formatear_respuesta(response)
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'habitacion/habitacion_busqueda.html',
+                            {"formulario":formulario,"errores":errores})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    else:
+        formulario = BusquedaAvanzadaHabitacionForm(None)
+    return render(request, 'habitacion/habitacion_busqueda.html',{"formulario":formulario})
+
 
 #Páginas de Error
 def mi_error_404(request,exception=None):
