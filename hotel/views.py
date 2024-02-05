@@ -33,6 +33,7 @@ def formatear_respuesta(response):
 def index(request):
     return render(request,'index.html')
 
+# Autenticacion dependiendo de si es OUATH 2 o JWT
 def crear_cabecera():
     #return {'Authorization': f'Bearer {env("NEW_TOKEN")}'}
     return {'Authorization': f'Bearer {env("BEARER")}'}
