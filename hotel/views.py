@@ -5,6 +5,7 @@ from .forms import *
 from django.contrib import messages
 import requests
 from django.core import serializers
+import json
 # Create your views here.
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -211,6 +212,56 @@ def reserva_busqueda_avanzada(request):
     else:
         formulario = BusquedaAvanzadaReservaForm(None)
     return render(request, 'reserva/reserva_busqueda.html',{"formulario":formulario})
+
+
+
+
+#CREATE RESERVAS
+def reservas_crear(request):
+    if (request.method == "POST"):
+        try:
+            formulario = ReservaForm(request.POST)
+            headers = crear_cabecera()
+            datos = formulario.data.copy()
+            datos["cliente"] = request.POST.getlist("cliente");
+            datos["habitacion"] = request.POST.getlist("habitacion");
+            datos["fecha_entrada"] = str(
+                                        datetime.date()
+                                        )
+            datos["fecha_entrada"] = str(
+                                        datetime.date()
+                                        )    
+            response = request.post(
+                f'{env("DOMINIO")}{env("VERSION")}/reservas/crear',
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                return redirect("libro_lista")
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'reserva/create.html',
+                            {"formulario":formulario})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+        
+    else:
+         formulario = ReservaForm(None)
+    return render(request, 'reserva/create.html',{"formulario":formulario})
+
+
+    
 
 
 #Páginas de Error

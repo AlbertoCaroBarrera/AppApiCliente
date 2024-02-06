@@ -1,8 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from .models import *
-from datetime import date
-import datetime
+from datetime import date, datetime
 from django.contrib.auth.forms import UserCreationForm
 from .helper import helper
 class BusquedaClienteForm(forms.Form):
@@ -28,9 +27,16 @@ class BusquedaAvanzadaReservaForm(forms.Form):
 
 
 class ReservaForm(forms.Form):
-    fecha_entrada = forms.DateTimeField(label="Fecha de entrada")
+    fecha_entrada = forms.DateField(label="Fecha Desde",
+                                required=False,
+                                widget= forms.SelectDateWidget(years=range(1990,2030))
+                                )
 
-    fecha_salida = forms.DateTimeField(label="Fecha de salida")
+    fecha_salida = forms.DateField(label="Fecha Hasta",
+                                  required=False,
+                                  widget= forms.SelectDateWidget(years=range(1990,2030))
+
+)
 
     def __init__(self,*args, **kwargs):
         super(ReservaForm,self).__init__(*args, **kwargs)
@@ -40,7 +46,7 @@ class ReservaForm(forms.Form):
                                                     widget=forms.Select,
                                                     required=True)
         
-        habitacionesDisponibles = helper.obtener_habitaciones_disponibles()
+        habitacionesDisponibles = helper.obtener_habitaciones_select()
         self.fields['habitacion'] = forms.ChoiceField(choices=habitacionesDisponibles,
                                                     widget=forms.Select,
                                                     required=True)

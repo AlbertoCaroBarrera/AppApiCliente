@@ -15,5 +15,5 @@ urlpatterns = [
     path('reservas_lista_api', views.reservas_lista_api, name='reservas_lista_api'),
     path('reservas-mejorado', views.reservas_lista_api_mejorada, name='reservas_lista_api_mejorada'),
     path('reserva_busqueda_avanzada', views.reserva_busqueda_avanzada, name='reserva_busqueda_avanzada'),
-    
+    path('reservas/crear',views.reservas_crear,name='reserva_crear'),
 ]

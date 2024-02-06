@@ -5,11 +5,12 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'),True)
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 
 def crear_cabecera():
-    return {'Authorization': f'Bearer {env("NEW_TOKEN")}'}
+    return {'Authorization': f'Bearer {env("BEARER")}'}
 
 class helper:
 
@@ -18,7 +19,6 @@ class helper:
         headers = crear_cabecera()
         response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes', headers=headers)
         clientes = response.json()
-
         lista_clientes = [("","Ninguna")]
         for cliente in clientes:
             lista_clientes.append((cliente['id'], cliente['nombre']))
@@ -32,5 +32,5 @@ class helper:
 
         lista_habitaciones = [("","Ninguna")]
         for habitacion in habitaciones:
-            lista_habitaciones.append((habitacion['id'], habitacion['nombre']))
+            lista_habitaciones.append((habitacion['id'], habitacion['tipo']))
         return lista_habitaciones
