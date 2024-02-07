@@ -27,17 +27,19 @@ class BusquedaAvanzadaReservaForm(forms.Form):
 
 
 class ReservaForm(forms.Form):
-    fecha_entrada = forms.DateField(label="Fecha Desde",
-                                required=False,
-                                widget= forms.SelectDateWidget(years=range(1990,2030))
-                                )
-
-    fecha_salida = forms.DateField(label="Fecha Hasta",
-                                  required=False,
-                                  widget= forms.SelectDateWidget(years=range(1990,2030))
-
-)
-
+    fecha_actual = datetime.now().strftime('%Y-%m-%dT%H:%M')  # Obtiene la fecha y hora actuales en formato datetime-local
+    
+    fecha_entrada = forms.DateTimeField(label="Fecha y Hora Desde",
+                                         required=False,
+                                         initial=fecha_actual,  # Establece la fecha y hora actuales como valor predeterminado
+                                         widget=forms.DateTimeInput(attrs={'type': 'datetime-local'})
+                                         )
+    
+    fecha_salida = forms.DateTimeField(label="Fecha y Hora Hasta",
+                                       required=False,
+                                       initial=fecha_actual,  # Establece la fecha y hora actuales como valor predeterminado
+                                       widget=forms.DateTimeInput(attrs={'type': 'datetime-local'})
+                                       )
     def __init__(self,*args, **kwargs):
         super(ReservaForm,self).__init__(*args, **kwargs)
         

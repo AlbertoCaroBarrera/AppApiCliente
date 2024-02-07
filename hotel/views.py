@@ -224,14 +224,8 @@ def reservas_crear(request):
             headers = crear_cabecera()
             datos = formulario.data.copy()
             datos["cliente"] = request.POST.getlist("cliente");
-            datos["habitacion"] = request.POST.getlist("habitacion");
-            datos["fecha_entrada"] = str(
-                                        datetime.date()
-                                        )
-            datos["fecha_entrada"] = str(
-                                        datetime.date()
-                                        )    
-            response = request.post(
+            datos["habitacion"] = request.POST.getlist("habitacion");   
+            response = requests.post(
                 f'{env("DOMINIO")}{env("VERSION")}/reservas/crear',
                 headers=headers,
                 data=json.dumps(datos)
