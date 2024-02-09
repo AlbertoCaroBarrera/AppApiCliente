@@ -11,6 +11,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 import environ
 import os
+
+
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
@@ -221,17 +223,22 @@ def reservas_crear(request):
     if (request.method == "POST"):
         try:
             formulario = ReservaForm(request.POST)
-            headers = crear_cabecera()
+            headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json" 
+                    } 
             datos = formulario.data.copy()
-            datos["cliente"] = request.POST.getlist("cliente");
-            datos["habitacion"] = request.POST.getlist("habitacion");   
+            datos["cliente"] = request.POST.get("cliente");
+            datos["habitacion"] = request.POST.get("habitacion")
+            datos["fecha_entrada"] = str(datetime.strptime(datos['fecha_entrada'], '%Y-%m-%dT%H:%M'))
+            datos["fecha_salida"] = str(datetime.strptime(datos['fecha_salida'], '%Y-%m-%dT%H:%M'))
             response = requests.post(
                 f'{env("DOMINIO")}{env("VERSION")}/reservas/crear',
                 headers=headers,
                 data=json.dumps(datos)
             )
             if(response.status_code == requests.codes.ok):
-                return redirect("libro_lista")
+                return redirect("reservas_lista_api")
             else:
                 print(response.status_code)
                 response.raise_for_status()
@@ -251,11 +258,8 @@ def reservas_crear(request):
             return mi_error_500(request)
         
     else:
-         formulario = ReservaForm(None)
+        formulario = ReservaForm(None)
     return render(request, 'reserva/create.html',{"formulario":formulario})
-
-
-    
 
 
 #Páginas de Error
