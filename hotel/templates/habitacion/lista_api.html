@@ -1,21 +1,22 @@
-{% extends "principal.html" %}
+{% extends 'principal.html' %}
 
 {% block contenido %}
-
-{% for habitacion in habitaciones_mostrar %}
-
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+  {% for habitacion in habitaciones_mostrar %}
     <ul>
-        <li>
-            Numero de habitacion: {{habitacion.numero_hab}}
-        </li>
-        <li>
-            Tipo de habitacion: {{habitacion.tipo}}
-        </li>
-        <li>
-            Precio por noche de la habitacion: {{habitacion.precio_noche}}
-        </li>
+      <li>Numero de habitacion: {{ habitacion.numero_hab }}</li>
+      <li>Tipo de habitacion: {{ habitacion.tipo }}</li>
+      <li>Precio por noche de la habitacion: {{ habitacion.precio_noche }}</li>
+      <li>
+        <a name="" id="" class="btn btn-primary" href="{% url 'habitacion_editar' habitacion.id %}" role="button">Editar habitacion</a>
+
+        <a name="" id="" class="btn btn-primary" href="{% url 'habitacion_editar_nombre' habitacion.id %}" role="button">Editar tipo habitacion</a>
+        <a name="" id="" class="btn btn-primary" href="{% url 'habitacion_eliminar' habitacion.id %}" role="button" onclick="eliminar()">Eliminar Habitacion</a>
+      </li>
     </ul>
-
-{% endfor %}
-
-{% endblock contenido %}
+    {% endfor %}
+{% endblock %}

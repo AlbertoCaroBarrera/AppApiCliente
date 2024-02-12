@@ -1,14 +1,19 @@
-{% extends "principal.html" %}
+{% extends 'principal.html' %}
 {% block contenido %}
-
-    {% for reserva in reservas_mostrar %}
-    
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+  {% for reserva in reservas_mostrar %}
     <ul>
-        <li>{{reserva.cliente}}</li>
-        <li>{{reserva.habitacion}}</li>
-        <li>Fecha de entrada: {{reserva.fecha_entrada}}</li>
-        <li>Fecha de salida: {{reserva.fecha_salida}}</li>
+      <li>{{ reserva.cliente }}</li>
+      <li>{{ reserva.habitacion }}</li>
+      <li>Fecha de entrada: {{ reserva.fecha_entrada }}</li>
+      <li>Fecha de salida: {{ reserva.fecha_salida }}</li>
+      <a name="" id="" class="btn btn-primary" href="{% url 'reserva_editar' reserva.id %}" role="button">Editar Reserva</a>
+      <a name="" id="" class="btn btn-primary" href="{% url 'reserva_editar_fecha' reserva.id %}" role="button">Editar tipo reserva</a>
+      <a name="" id="" class="btn btn-primary" href="{% url 'reserva_eliminar' reserva.id %}" role="button" onclick="eliminar()">Eliminar Reserva</a>
     </ul>
-    {% endfor %}
-
-{% endblock contenido %}
+  {% endfor %}
+{% endblock %}

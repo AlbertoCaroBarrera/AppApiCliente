@@ -1,3 +1,4 @@
+from requests.exceptions import HTTPError
 from django.shortcuts import render,redirect
 from django.db.models import Q,Prefetch
 from django.forms import modelform_factory
@@ -66,7 +67,7 @@ def habitaciones_lista_api(request):
     headers = crear_cabecera()
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones', headers=headers)
     habitaciones = formatear_respuesta(response)
-    return render(request, 'habitacion/habitacion_list.html', {"habitaciones_mostrar": habitaciones})
+    return render(request, 'habitacion/lista_api.html', {"habitaciones_mostrar": habitaciones})
 
 def habitaciones_lista_api_mejorada(request):
     headers = crear_cabecera()
@@ -105,7 +106,6 @@ def cliente_busqueda_simple(request):
     else:
         return redirect("index")
     
-from requests.exceptions import HTTPError
 
 def cliente_busqueda_avanzada(request):
     if(len(request.GET) > 0):
@@ -238,6 +238,7 @@ def reservas_crear(request):
                 data=json.dumps(datos)
             )
             if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha creado la reserva correctamente.')
                 return redirect("reservas_lista_api")
             else:
                 print(response.status_code)
@@ -262,6 +263,457 @@ def reservas_crear(request):
     return render(request, 'reserva/create.html',{"formulario":formulario})
 
 
+def reserva_editar(request,reserva_id):
+   
+    datosFormulario = None
+    
+    if request.method == "POST":
+        datosFormulario = request.POST
+    
+    reserva = helper.obtener_reserva(reserva_id)
+    formulario = ReservaForm(datosFormulario,
+            initial={
+                'cliente': reserva['cliente'],
+                'habitacion': reserva["habitacion"],
+                'fecha_entrada': datetime.strptime(reserva['fecha_entrada'], '%Y-%m-%dT%H:%M:%S%z').date(),
+                'fecha_salida': datetime.strptime(reserva['fecha_salida'], '%Y-%m-%dT%H:%M:%S%z').date()
+            }
+    )
+    if (request.method == "POST"):
+        try:
+            formulario = ReservaForm(request.POST)
+            headers = crear_cabecera()
+            datos = request.POST.copy()
+            datos["cliente"] = request.POST.get("cliente");
+            datos["habitacion"] = request.POST.get("habitacion")
+            datos["fecha_entrada"] = str(datetime.strptime(datos['fecha_entrada'], '%Y-%m-%dT%H:%M'))
+            datos["fecha_salida"] = str(datetime.strptime(datos['fecha_salida'], '%Y-%m-%dT%H:%M'))
+           
+            response = requests.put(
+                'http://127.0.0.1:8080/api/v1/reserva/editar/'+str(reserva_id),
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha editado la reserva correctamente.')
+                
+                return redirect("reserva_mostrar",reserva_id=reserva_id)
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'reserva/actualizar.html',
+                            {"formulario":formulario,"reserva":reserva})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    return render(request, 'reserva/actualizar.html',{"formulario":formulario,"reserva":reserva})
+
+def reserva_editar_fecha(request,reserva_id):
+   
+    datosFormulario = None
+    
+    if request.method == "POST":
+        datosFormulario = request.POST
+    
+    reserva = helper.obtener_reserva(reserva_id)
+    formulario = ReservaActualizarFechaForm(datosFormulario,
+            initial={
+                'fecha_entrada': reserva['fecha_entrada'],
+            }
+    )
+    if (request.method == "POST"):
+        try:
+            formulario = ReservaForm(request.POST)
+            headers = crear_cabecera()
+            datos = request.POST.copy()
+            response = requests.patch(
+                'http://127.0.0.1:8080/api/v1/reserva/actualizar/fecha/'+str(reserva_id),
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha editado la reserva correctamente.')
+                
+                return redirect("reserva_mostrar")
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'reserva/actualizar_fecha_reserva.html',
+                            {"formulario":formulario,"reserva":reserva})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    return render(request, 'reserva/actualizar_fecha_reserva.html',{"formulario":formulario,"reserva":reserva})
+
+
+def reserva_eliminar(request,reserva_id):
+    try:
+        headers = crear_cabecera()
+        response = requests.delete(
+            'http://127.0.0.1:8080/api/v1/reserva/eliminar/'+str(reserva_id),
+            headers=headers,
+        )
+        if(response.status_code == requests.codes.ok):
+            messages.success(request, 'Se ha eliminado la reserva correctamente.')
+            
+            return redirect("reservas_lista_api")
+        else:
+            print(response.status_code)
+            response.raise_for_status()
+    except Exception as err:
+        print(f'Ocurrió un error: {err}')
+        return mi_error_500(request)
+    return redirect('reservas_lista_api')
+
+# CLIENTES
+def clientes_crear(request):
+    if (request.method == "POST"):
+        try:
+            formulario = ClienteForm(request.POST)
+            headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json" 
+                    } 
+            datos = formulario.data.copy()
+            datos["nombre"] = request.POST.get("nombre");
+            datos["correo_electronico"] = request.POST.get("correo_electronico")
+            datos["telefono"] = request.POST.get("telefono")
+            datos["direccion"] = request.POST.get("direccion")
+            
+            response = requests.post(
+                f'{env("DOMINIO")}{env("VERSION")}/clientes/crear',
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha creado al cliente correctamente.')
+                
+                return redirect("clientes_lista_api")
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'cliente/create.html',
+                            {"formulario":formulario})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+        
+    else:
+        formulario = ClienteForm(None)
+    return render(request, 'cliente/create.html',{"formulario":formulario})
+
+
+def cliente_editar(request,cliente_id):
+   
+    datosFormulario = None
+    
+    if request.method == "POST":
+        datosFormulario = request.POST
+    
+    cliente = helper.obtener_cliente(cliente_id)
+    formulario = ClienteForm(datosFormulario,
+            initial={
+                'nombre': cliente['nombre'],
+                'correo_electronico': cliente["correo_electronico"],
+                'telefono': cliente["telefono"],
+                'direccion': cliente["direccion"],
+
+            }
+    )
+    if (request.method == "POST"):
+        try:
+            formulario = ClienteForm(request.POST)
+            headers = crear_cabecera()
+            datos = request.POST.copy()
+            datos["nombre"] = request.POST.get("nombre");
+            datos["correo_electronico"] = request.POST.get("correo_electronico")
+            datos["telefono"] = request.POST.get("telefono")
+            datos["direccion"] = request.POST.get("direccion")
+
+           
+            response = requests.put(
+                'http://127.0.0.1:8080/api/v1/cliente/editar/'+str(cliente_id),
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha editado la cliente correctamente.')
+                
+                return redirect("cliente_mostrar",cliente_id=cliente_id)
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'cliente/actualizar.html',
+                            {"formulario":formulario,"cliente":cliente})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    return render(request, 'cliente/actualizar.html',{"formulario":formulario,"cliente":cliente})
+
+def cliente_editar_nombre(request,cliente_id):
+   
+    datosFormulario = None
+    
+    if request.method == "POST":
+        datosFormulario = request.POST
+    
+    cliente = helper.obtener_cliente(cliente_id)
+    formulario = ClienteActualizarNombreForm(datosFormulario,
+            initial={
+                'nombre': cliente['nombre'],
+            }
+    )
+    if (request.method == "POST"):
+        try:
+            formulario = ClienteForm(request.POST)
+            headers = crear_cabecera()
+            datos = request.POST.copy()
+            response = requests.patch(
+                'http://127.0.0.1:8080/api/v1/cliente/actualizar/nombre/'+str(cliente_id),
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha editado la cliente correctamente.')
+                
+                return redirect("cliente_mostrar")
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'cliente/actualizar_nombre_cliente.html',
+                            {"formulario":formulario,"cliente":cliente})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    return render(request, 'cliente/actualizar_nombre_cliente.html',{"formulario":formulario,"cliente":cliente})
+
+def cliente_eliminar(request,cliente_id):
+    try:
+        headers = crear_cabecera()
+        response = requests.delete(
+            'http://127.0.0.1:8080/api/v1/cliente/eliminar/'+str(cliente_id),
+            headers=headers,
+        )
+        if(response.status_code == requests.codes.ok):
+            messages.success(request, 'Se ha eliminado la cliente correctamente.')
+            
+            return redirect("clientes_lista_api")
+        else:
+            print(response.status_code)
+            response.raise_for_status()
+    except Exception as err:
+        print(f'Ocurrió un error: {err}')
+        return mi_error_500(request)
+    return redirect('clientes_lista_api')
+
+
+# Habitacion
+
+def Habitacion_crear(request):
+    if (request.method == "POST"):
+        try:
+            formulario = HabitacionForm(request.POST)
+            headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json" 
+                    } 
+            datos = formulario.data.copy()
+            datos["numero_hab"] = request.POST.get("numero_hab");
+            datos["tipo"] = request.POST.get("tipo")
+            datos["precio_noche"] = request.POST.get("precio_noche")
+            
+            response = requests.post(
+                f'{env("DOMINIO")}{env("VERSION")}/habitacion/crear',
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha creado la habitacion correctamente.')
+                
+                return redirect("habitaciones_lista_api")
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'habitacion/create.html',
+                            {"formulario":formulario})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+        
+    else:
+        formulario = HabitacionForm(None)
+    return render(request, 'habitacion/create.html',{"formulario":formulario})
+
+def habitacion_editar(request,habitacion_id):
+   
+    datosFormulario = None
+    
+    if request.method == "POST":
+        datosFormulario = request.POST
+    
+    habitacion = helper.obtener_habitacion(habitacion_id)
+    formulario = HabitacionForm(datosFormulario,
+            initial={
+                'numero_hab': habitacion['numero_hab'],
+                'tipo': habitacion['tipo'],
+                'precio_noche': habitacion['precio_noche']
+            }
+    )
+    if (request.method == "POST"):
+        try:
+            formulario = HabitacionForm(request.POST)
+            headers = crear_cabecera()
+            datos = request.POST.copy()
+            datos["numero_hab"] = int(request.POST.get("numero_hab"));
+            datos["tipo"] = request.POST.get("tipo")
+            datos["precio_noche"] = float(request.POST.get("precio_noche"))
+            response = requests.put(
+                'http://127.0.0.1:8080/api/v1/habitacion/editar/'+str(habitacion_id),
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha editado la habitacion correctamente.')
+                
+                return redirect("habitaciones_mostrar",habitacion_id=habitacion_id)
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'habitacion/actualizar.html',
+                            {"formulario":formulario,"habitacion":habitacion})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    return render(request, 'habitacion/actualizar.html',{"formulario":formulario,"habitacion":habitacion})
+
+
+def habitacion_editar_nombre(request,habitacion_id):
+   
+    datosFormulario = None
+    
+    if request.method == "POST":
+        datosFormulario = request.POST
+    
+    habitacion = helper.obtener_habitacion(habitacion_id)
+    formulario = HabitacionActualizarNombreForm(datosFormulario,
+            initial={
+                'tipo': habitacion['tipo'],
+            }
+    )
+    if (request.method == "POST"):
+        try:
+            formulario = HabitacionForm(request.POST)
+            headers = crear_cabecera()
+            datos = request.POST.copy()
+            response = requests.patch(
+                'http://127.0.0.1:8080/api/v1/habitacion/actualizar/nombre/'+str(habitacion_id),
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                messages.success(request, 'Se ha editado la habitacion correctamente.')
+                
+                return redirect("habitacion_mostrar")
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'habitacion/actualizar_nombre_habitacion.html',
+                            {"formulario":formulario,"habitacion":habitacion})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    return render(request, 'habitacion/actualizar_nombre_habitacion.html',{"formulario":formulario,"habitacion":habitacion})
+
+def habitacion_eliminar(request,habitacion_id):
+    try:
+        headers = crear_cabecera()
+        response = requests.delete(
+            'http://127.0.0.1:8080/api/v1/habitacion/eliminar/'+str(habitacion_id),
+            headers=headers,
+        )
+        if(response.status_code == requests.codes.ok):
+            messages.success(request, 'Se ha eliminado la habitacion correctamente.')
+            return redirect("habitaciones_lista_api")
+        else:
+            print(response.status_code)
+            response.raise_for_status()
+    except Exception as err:
+        print(f'Ocurrió un error: {err}')
+        return mi_error_500(request)
+    return redirect('habitaciones_lista_api')
+
 #Páginas de Error
 def mi_error_404(request,exception=None):
     return render(request, 'errores/404.html',None,None,404)
@@ -269,3 +721,4 @@ def mi_error_404(request,exception=None):
 #Páginas de Error
 def mi_error_500(request,exception=None):
     return render(request, 'errores/500.html',None,None,500)
+

@@ -1,0 +1,44 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+
+{% load bootstrap5 %}
+<form action = "{% url 'reserva_editar' reserva.id %}" method = "post"> 
+    
+    {% csrf_token %} 
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.cliente show_label=True %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.habitacion show_label=True %}
+    </div>
+    
+    
+    <div class="mb-4">
+        {% bootstrap_field formulario.fecha_entrada show_label=True %}
+        <div class="invalid-feedback">
+            {% for error in formulario.fecha_entrada.errors %} 
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>      
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.fecha_salida show_label=True %}
+        <div class="invalid-feedback">
+            {% for error in formulario.fecha_salida.errors %} 
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>    
+
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    {% endbuttons %}
+
+</form> 
+
+
+{% endblock %}

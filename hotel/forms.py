@@ -53,4 +53,41 @@ class ReservaForm(forms.Form):
                                                     widget=forms.Select,
                                                     required=True)
         
+class ReservaActualizarFechaForm(forms.Form):
+    fecha_entrada = forms.DateTimeField(label="Fecha y Hora Hasta",
+                                       required=True,
+                                       widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
         
+        
+class ClienteForm(forms.Form):
+    nombre = forms.CharField(label="Nombre",
+                             required=True,
+                             max_length=200,
+                             help_text="200 caracteres maximo")
+    
+    correo_electronico = forms.EmailField(label="Correo Electrónico",max_length=200,required=True)
+    
+    telefono = forms.CharField(label="Teléfono",required=True,max_length=200)
+    
+    direccion = forms.CharField(widget=forms.Textarea)
+
+class ClienteActualizarNombreForm(forms.Form):
+    nombre = forms.CharField(label="nombre de la cliente",
+                             required=True, 
+                             max_length=200,
+                             help_text="200 caracteres como máximo")
+
+
+class HabitacionForm(forms.Form):
+    numero_hab = forms.IntegerField(label="Número de Habitación",required=True)
+    
+    tipo = forms.CharField(max_length=200,required=True)
+    
+    precio_noche = forms.FloatField(required=True)
+    
+class HabitacionActualizarNombreForm(forms.Form):
+    tipo = forms.CharField(label="tipo de la habitacion",
+                             required=True, 
+                             max_length=200,
+                             help_text="200 caracteres como máximo")
+

@@ -34,3 +34,24 @@ class helper:
         for habitacion in habitaciones:
             lista_habitaciones.append((habitacion['id'], habitacion['tipo']))
         return lista_habitaciones
+    
+    def obtener_reserva(id):
+        # obtenemos todos las reservas
+        headers = crear_cabecera()
+        response = requests.get('http://127.0.0.1:8080/api/v1/reserva/'+str(id),headers=headers)
+        reserva = response.json()
+        return reserva
+    
+    def obtener_cliente(id):
+        # obtenemos todos las clientees
+        headers = crear_cabecera()
+        response = requests.get('http://127.0.0.1:8080/api/v1/cliente/'+str(id),headers=headers)
+        cliente = response.json()
+        return cliente
+
+    def obtener_habitacion(id):
+        # obtenemos todos las habitaciones
+        headers = crear_cabecera()
+        response = requests.get('http://127.0.0.1:8080/api/v1/habitacion/'+str(id),headers=headers)
+        habitacion = response.json()
+        return habitacion

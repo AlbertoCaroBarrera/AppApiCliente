@@ -1,0 +1,24 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+
+{% load bootstrap5 %}
+<form action = "{% url 'reserva_editar_fecha' reserva.id %}" method = "post"> 
+    
+    {% csrf_token %} 
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.fecha_entrada show_label=True %}
+        <div class="invalid-feedback">
+            {% for error in formulario.fecha_entrada.errors %} 
+                {{ error }}
+            {% endfor %}
+        </div>
+    </div>    
+
+    <button type="submit" class="btn btn-primary">Enviar</button>
+
+</form> 
+
+
+{% endblock %}

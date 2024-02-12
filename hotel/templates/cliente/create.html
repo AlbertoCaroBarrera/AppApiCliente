@@ -7,24 +7,24 @@
 {%block contenido%}
 {% bootstrap_css %}
 <div class="container">
-<form action="{% url 'cliente_create' %}" method="POST">
+<form action="{% url 'cliente_crear' %}" method="POST">
 
     {% csrf_token %}
     
     <div class="mb-4">
-        {% bootstrap_field formulario_cliente.nombre %}
+        {% bootstrap_field formulario.nombre %}
     </div>
 
     <div class="mb-4">
-        {% bootstrap_field formulario_cliente.correo_electronico %}
+        {% bootstrap_field formulario.correo_electronico %}
     </div>
 
     <div class="mb-4">
-        {% bootstrap_field formulario_cliente.telefono %}
+        {% bootstrap_field formulario.telefono %}
     </div>
 
     <div class="mb-4">
-        {% bootstrap_field formulario_cliente.direccion %}
+        {% bootstrap_field formulario.direccion %}
     </div>
 
     <button type="submit">Enviar</button>
