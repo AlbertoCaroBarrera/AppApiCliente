@@ -6,7 +6,7 @@
     <div class="alert alert-success" role="alert">{{ message }}</div>
   {% endfor %}
 {% endif %}
-  {% for habitacion in habitaciones_mostrar %}
+  {% for habitacion in habitaciones_lista_api %}
     <ul>
       <li>Numero de habitacion: {{ habitacion.numero_hab }}</li>
       <li>Tipo de habitacion: {{ habitacion.tipo }}</li>

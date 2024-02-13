@@ -67,7 +67,7 @@ def habitaciones_lista_api(request):
     headers = crear_cabecera()
     response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones', headers=headers)
     habitaciones = formatear_respuesta(response)
-    return render(request, 'habitacion/lista_api.html', {"habitaciones_mostrar": habitaciones})
+    return render(request, 'habitacion/lista_api.html', {"habitaciones_lista_api": habitaciones})
 
 def habitaciones_lista_api_mejorada(request):
     headers = crear_cabecera()
@@ -225,7 +225,7 @@ def reservas_crear(request):
             formulario = ReservaForm(request.POST)
             headers =  {
                         'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json" 
+                        "Content-Type": "application/json"  
                     } 
             datos = formulario.data.copy()
             datos["cliente"] = request.POST.get("cliente");
@@ -271,24 +271,31 @@ def reserva_editar(request,reserva_id):
         datosFormulario = request.POST
     
     reserva = helper.obtener_reserva(reserva_id)
+
+    fecha_hora_str = reserva['fecha_entrada']
+    fecha_hora_str_sin_dos_puntos = fecha_hora_str[:-3] + fecha_hora_str[-2:]
+    
     formulario = ReservaForm(datosFormulario,
             initial={
                 'cliente': reserva['cliente'],
                 'habitacion': reserva["habitacion"],
-                'fecha_entrada': datetime.strptime(reserva['fecha_entrada'], '%Y-%m-%dT%H:%M:%S%z').date(),
-                'fecha_salida': datetime.strptime(reserva['fecha_salida'], '%Y-%m-%dT%H:%M:%S%z').date()
+                'fecha_entrada': datetime.strptime(fecha_hora_str_sin_dos_puntos, '%Y-%m-%dT%H:%M:%S%z'),
+            
             }
     )
     if (request.method == "POST"):
         try:
             formulario = ReservaForm(request.POST)
-            headers = crear_cabecera()
+            headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json"  
+                    } 
             datos = request.POST.copy()
             datos["cliente"] = request.POST.get("cliente");
             datos["habitacion"] = request.POST.get("habitacion")
-            datos["fecha_entrada"] = str(datetime.strptime(datos['fecha_entrada'], '%Y-%m-%dT%H:%M'))
-            datos["fecha_salida"] = str(datetime.strptime(datos['fecha_salida'], '%Y-%m-%dT%H:%M'))
-           
+            datos["fecha_entrada"] = str(datetime.strptime(datos['fecha_entrada'], '%Y-%m-%dT%H:%M:%S%z'))
+            datos["fecha_salida"] = str(datetime.strptime(datos['fecha_salida'], '%Y-%m-%dT%H:%M:%S%z'))
+            
             response = requests.put(
                 'http://127.0.0.1:8080/api/v1/reserva/editar/'+str(reserva_id),
                 headers=headers,
@@ -333,7 +340,10 @@ def reserva_editar_fecha(request,reserva_id):
     if (request.method == "POST"):
         try:
             formulario = ReservaForm(request.POST)
-            headers = crear_cabecera()
+            headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json"  
+                    } 
             datos = request.POST.copy()
             response = requests.patch(
                 'http://127.0.0.1:8080/api/v1/reserva/actualizar/fecha/'+str(reserva_id),
@@ -450,7 +460,10 @@ def cliente_editar(request,cliente_id):
     if (request.method == "POST"):
         try:
             formulario = ClienteForm(request.POST)
-            headers = crear_cabecera()
+            headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json"  
+                    } 
             datos = request.POST.copy()
             datos["nombre"] = request.POST.get("nombre");
             datos["correo_electronico"] = request.POST.get("correo_electronico")
@@ -466,7 +479,7 @@ def cliente_editar(request,cliente_id):
             if(response.status_code == requests.codes.ok):
                 messages.success(request, 'Se ha editado la cliente correctamente.')
                 
-                return redirect("cliente_mostrar",cliente_id=cliente_id)
+                return redirect("clientes_lista_api")
             else:
                 print(response.status_code)
                 response.raise_for_status()
@@ -502,7 +515,10 @@ def cliente_editar_nombre(request,cliente_id):
     if (request.method == "POST"):
         try:
             formulario = ClienteForm(request.POST)
-            headers = crear_cabecera()
+            headers = headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json"  
+                    } 
             datos = request.POST.copy()
             response = requests.patch(
                 'http://127.0.0.1:8080/api/v1/cliente/actualizar/nombre/'+str(cliente_id),
@@ -512,7 +528,7 @@ def cliente_editar_nombre(request,cliente_id):
             if(response.status_code == requests.codes.ok):
                 messages.success(request, 'Se ha editado la cliente correctamente.')
                 
-                return redirect("cliente_mostrar")
+                return redirect("clientes_lista_api")
             else:
                 print(response.status_code)
                 response.raise_for_status()
@@ -616,7 +632,10 @@ def habitacion_editar(request,habitacion_id):
     if (request.method == "POST"):
         try:
             formulario = HabitacionForm(request.POST)
-            headers = crear_cabecera()
+            headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json"  
+                    } 
             datos = request.POST.copy()
             datos["numero_hab"] = int(request.POST.get("numero_hab"));
             datos["tipo"] = request.POST.get("tipo")
@@ -629,7 +648,7 @@ def habitacion_editar(request,habitacion_id):
             if(response.status_code == requests.codes.ok):
                 messages.success(request, 'Se ha editado la habitacion correctamente.')
                 
-                return redirect("habitaciones_mostrar",habitacion_id=habitacion_id)
+                return redirect("habitaciones_lista_api")
             else:
                 print(response.status_code)
                 response.raise_for_status()
@@ -666,7 +685,10 @@ def habitacion_editar_nombre(request,habitacion_id):
     if (request.method == "POST"):
         try:
             formulario = HabitacionForm(request.POST)
-            headers = crear_cabecera()
+            headers =  {
+                        'Authorization': 'Bearer '+env("BEARER"),
+                        "Content-Type": "application/json"  
+                    } 
             datos = request.POST.copy()
             response = requests.patch(
                 'http://127.0.0.1:8080/api/v1/habitacion/actualizar/nombre/'+str(habitacion_id),
@@ -676,7 +698,7 @@ def habitacion_editar_nombre(request,habitacion_id):
             if(response.status_code == requests.codes.ok):
                 messages.success(request, 'Se ha editado la habitacion correctamente.')
                 
-                return redirect("habitacion_mostrar")
+                return redirect("habitaciones_lista_api")
             else:
                 print(response.status_code)
                 response.raise_for_status()
