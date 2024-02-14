@@ -55,3 +55,21 @@ class helper:
         response = requests.get('http://127.0.0.1:8080/api/v1/habitacion/'+str(id),headers=headers)
         habitacion = response.json()
         return habitacion
+    
+
+    def obtener_token_session(usuario,password):
+        token_url = 'http://127.0.0.1:8080/oauth2/token/'
+        data = {
+            'grant_type': 'password',
+            'username': usuario,
+            'password': password,
+            'client_id': 'admin',
+            'client_secret': 'admin',
+        }   
+
+        response = requests.post(token_url, data=data)
+        respuesta = response.json()
+        if response.status_code == 200:
+            return respuesta.get('access_token')
+        else:
+            raise Exception(respuesta.get("error_description"))

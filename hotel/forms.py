@@ -4,6 +4,7 @@ from .models import *
 from datetime import date, datetime
 from django.contrib.auth.forms import UserCreationForm
 from .helper import helper
+from django.contrib.auth.models import User
 class BusquedaClienteForm(forms.Form):
     textoBusqueda = forms.CharField(required=True)
     
@@ -87,7 +88,23 @@ class HabitacionForm(forms.Form):
     
 class HabitacionActualizarNombreForm(forms.Form):
     tipo = forms.CharField(label="tipo de la habitacion",
-                             required=True, 
-                             max_length=200,
-                             help_text="200 caracteres como máximo")
+                            required=True, 
+                            max_length=200,
+                            help_text="200 caracteres como máximo")
 
+class RegistroForm(UserCreationForm):
+    roles = (
+        (2,'cliente'),
+        (3, 'empleado'),
+    )
+    
+    rol = forms.ChoiceField(choices=roles)
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2', 'rol')
+        
+
+class LoginForm(forms.Form):
+    usuario = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput())
