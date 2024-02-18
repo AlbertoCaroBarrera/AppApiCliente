@@ -1,11 +1,6 @@
 {% extends 'principal.html' %}
 {% block cabezera %}
-  
-  {% if request.user.is_authenticated %}
-  <p>Bienvenido, {{ request.user.username }}!</p>
-  {% else %}
-  <p>No estás autenticado.</p>
-  {% endif %}
+
     
 {% endblock cabezera %}
 {% block contenido %}
