@@ -42,6 +42,11 @@ def crear_cabecera():
     #return {'Authorization': f'Bearer {env("NEW_TOKEN")}'}
     return {'Authorization': f'Bearer {env("BEARER")}'}
 
+def crear_cabecera_cliente(request):
+    return {
+                        'Authorization': 'Bearer '+ request.session["token"],
+                        "Content-Type": "application/json" 
+                    } 
 
 def usuarios_lista_api(request):
     headers = crear_cabecera()
@@ -223,10 +228,7 @@ def reservas_crear(request):
     if (request.method == "POST"):
         try:
             formulario = ReservaForm(request.POST)
-            headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json"  
-                    } 
+            headers =  crear_cabecera_cliente(request) 
             datos = formulario.data.copy()
             datos["cliente"] = request.POST.get("cliente");
             datos["habitacion"] = request.POST.get("habitacion")
@@ -286,10 +288,7 @@ def reserva_editar(request,reserva_id):
     if (request.method == "POST"):
         try:
             formulario = ReservaForm(request.POST)
-            headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json"  
-                    } 
+            headers =  crear_cabecera_cliente(request) 
             datos = request.POST.copy()
             datos["cliente"] = request.POST.get("cliente");
             datos["habitacion"] = request.POST.get("habitacion")
@@ -340,10 +339,7 @@ def reserva_editar_fecha(request,reserva_id):
     if (request.method == "POST"):
         try:
             formulario = ReservaForm(request.POST)
-            headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json"  
-                    } 
+            headers =  crear_cabecera_cliente(request) 
             datos = request.POST.copy()
             response = requests.patch(
                 'http://127.0.0.1:8080/api/v1/reserva/actualizar/fecha/'+str(reserva_id),
@@ -398,10 +394,7 @@ def clientes_crear(request):
     if (request.method == "POST"):
         try:
             formulario = ClienteForm(request.POST)
-            headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json" 
-                    } 
+            headers =  crear_cabecera_cliente(request)
             datos = formulario.data.copy()
             datos["nombre"] = request.POST.get("nombre");
             datos["correo_electronico"] = request.POST.get("correo_electronico")
@@ -460,10 +453,7 @@ def cliente_editar(request,cliente_id):
     if (request.method == "POST"):
         try:
             formulario = ClienteForm(request.POST)
-            headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json"  
-                    } 
+            headers =  crear_cabecera_cliente(request) 
             datos = request.POST.copy()
             datos["nombre"] = request.POST.get("nombre");
             datos["correo_electronico"] = request.POST.get("correo_electronico")
@@ -515,10 +505,7 @@ def cliente_editar_nombre(request,cliente_id):
     if (request.method == "POST"):
         try:
             formulario = ClienteForm(request.POST)
-            headers = headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json"  
-                    } 
+            headers = crear_cabecera_cliente(request)
             datos = request.POST.copy()
             response = requests.patch(
                 'http://127.0.0.1:8080/api/v1/cliente/actualizar/nombre/'+str(cliente_id),
@@ -575,7 +562,7 @@ def Habitacion_crear(request):
         try:
             formulario = HabitacionForm(request.POST)
             headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
+                        'Authorization': 'Bearer '+ request.session["token"],
                         "Content-Type": "application/json" 
                     } 
             datos = formulario.data.copy()
@@ -632,17 +619,14 @@ def habitacion_editar(request,habitacion_id):
     if (request.method == "POST"):
         try:
             formulario = HabitacionForm(request.POST)
-            headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json"  
-                    } 
             datos = request.POST.copy()
             datos["numero_hab"] = int(request.POST.get("numero_hab"));
             datos["tipo"] = request.POST.get("tipo")
             datos["precio_noche"] = float(request.POST.get("precio_noche"))
             response = requests.put(
                 'http://127.0.0.1:8080/api/v1/habitacion/editar/'+str(habitacion_id),
-                headers=headers,
+                headers=crear_cabecera_cliente(request)
+,
                 data=json.dumps(datos)
             )
             if(response.status_code == requests.codes.ok):
@@ -685,14 +669,10 @@ def habitacion_editar_nombre(request,habitacion_id):
     if (request.method == "POST"):
         try:
             formulario = HabitacionForm(request.POST)
-            headers =  {
-                        'Authorization': 'Bearer '+env("BEARER"),
-                        "Content-Type": "application/json"  
-                    } 
             datos = request.POST.copy()
             response = requests.patch(
                 'http://127.0.0.1:8080/api/v1/habitacion/actualizar/nombre/'+str(habitacion_id),
-                headers=headers,
+                headers=crear_cabecera_cliente(request),
                 data=json.dumps(datos)
             )
             if(response.status_code == requests.codes.ok):
@@ -768,7 +748,7 @@ def registrar_usuario(request):
                             )
                     request.session["usuario"]=usuario
                     request.session["token"] = token_acceso
-                    redirect("index")
+                    return redirect("index")
                 else:
                     print(response.status_code)
                     response.raise_for_status()

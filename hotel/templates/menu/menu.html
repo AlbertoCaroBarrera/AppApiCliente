@@ -15,9 +15,11 @@
             <li>
               <a class="dropdown-item" href="{% url 'habitacion_busqueda_avanzada' %}">Busqueda avanzada de una habitacion</a>
             </li>
+            {% if request.session.usuario.rol == 2 %}
             <li>
               <a class="dropdown-item" href="{% url 'habitacion_crear' %}">Crear una habitacion</a>
             </li>
+            {% endif %}
           </ul>
         </li>
         <li class="nav-item dropdown">
@@ -87,11 +89,23 @@
           </ul>
         </li>
         <li>
-          {% if not request.user.is_authenticated %}
+          {% if not request.session.token %}
             <a class="btn btn-outline-warning" href="{% url 'registrar_usuario' %}">Registrarse</a>
           {% endif %}
         </li>
+        <li>
+          {% if not request.session.token %}
+            <a class="btn btn-outline-warning" href="{% url 'login' %}">Login</a>
+          {% endif %}
+        </li>
+        <li>
+          {% if request.session.token %}
+            <a class="btn btn-outline-warning" href="{% url 'logout' %}">Desconectarse</a>
+
+          {% endif %}
+        </li>
       </ul>
+
     </div>
   </div>
 </nav>
