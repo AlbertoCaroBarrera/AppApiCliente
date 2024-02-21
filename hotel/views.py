@@ -7,6 +7,7 @@ from django.contrib import messages
 import requests
 from django.core import serializers
 import json
+from django.contrib.auth.decorators import permission_required
 # Create your views here.
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -557,6 +558,7 @@ def cliente_eliminar(request,cliente_id):
 
 # Habitacion
 
+@permission_required("hotel.add_habitacion")
 def Habitacion_crear(request):
     if (request.method == "POST"):
         try:

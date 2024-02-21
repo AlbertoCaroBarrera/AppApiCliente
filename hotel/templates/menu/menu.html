@@ -17,7 +17,9 @@
             </li>
             {% if request.session.usuario.rol == 2 %}
             <li>
+              {% if perms.hotel.add_habitacion %}
               <a class="dropdown-item" href="{% url 'habitacion_crear' %}">Crear una habitacion</a>
+              {% endif %}
             </li>
             {% endif %}
           </ul>
@@ -89,9 +91,30 @@
           </ul>
         </li>
         <li>
+<<<<<<< HEAD
           {% if not request.session.token %}
             <a class="btn btn-outline-warning" href="{% url 'registrar_usuario' %}">Registrarse</a>
           {% endif %}
+=======
+          <div class="ml-2">
+            {% if not request.session.token%}
+            <a class="btn btn-outline-warning" href="{% url 'login' %}">
+                Login
+            </a>
+            {% endif %}
+    
+            {% if not request.session.token %}
+              <a class="btn btn-outline-warning" href="{% url 'registrar_usuario' %}">
+                  Registrarse
+              </a>
+             {% endif %}
+    
+             {% if request.session.token %}
+             <a class="btn btn-outline-warning" href="{% url 'logout' %}">
+                 Desconectarse
+             </a>
+            {% endif %}
+>>>>>>> 30260a79e12a7653034e3cf55e1d6132ea6c7230
         </li>
         <li>
           {% if not request.session.token %}
