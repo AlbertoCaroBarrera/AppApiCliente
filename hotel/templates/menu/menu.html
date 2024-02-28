@@ -15,35 +15,36 @@
             <li>
               <a class="dropdown-item" href="{% url 'habitacion_busqueda_avanzada' %}">Busqueda avanzada de una habitacion</a>
             </li>
-            {% if request.session.usuario.rol == 2 %}
-            <li>
-              {% if perms.hotel.add_habitacion %}
-              <a class="dropdown-item" href="{% url 'habitacion_crear' %}">Crear una habitacion</a>
-              {% endif %}
-            </li>
+            {% if request.session.token and request.session.usuario.ROL == 3 %}
+              <li>
+                <a class="dropdown-item" href="{% url 'habitacion_crear' %}">Crear una habitacion</a>
+              </li>
             {% endif %}
           </ul>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Clientes</a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li>
-              <form action="{% url 'cliente_busqueda_simple' %}" class="d-flex mt-3" role="search" method="GET">
-                <input name="textoBusqueda" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                <button class="btn btn-light btn-outline-dark" type="submit">Buscar</button>
-              </form>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'clientes_lista_api' %}">Listado de clientes</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'cliente_busqueda_avanzada' %}">Busqueda avanzada cliente</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'cliente_crear' %}">Crear un cliente</a>
-            </li>
-          </ul>
-        </li>
+        {% if request.session.token and request.session.usuario.ROL == 3 %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Clientes</a>
+
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <form action="{% url 'cliente_busqueda_simple' %}" class="d-flex mt-3" role="search" method="GET">
+                  <input name="textoBusqueda" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                  <button class="btn btn-light btn-outline-dark" type="submit">Buscar</button>
+                </form>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{% url 'clientes_lista_api' %}">Listado de clientes</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{% url 'cliente_busqueda_avanzada' %}">Busqueda avanzada cliente</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{% url 'cliente_crear' %}">Crear un cliente</a>
+              </li>
+            </ul>
+          </li>
+        {% endif %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Reservas</a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -53,35 +54,44 @@
             <li>
               <a class="dropdown-item" href="{% url 'reserva_busqueda_avanzada' %}">Busqueda avanzada de reservas</a>
             </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'reserva_crear' %}">Crear una nueva reserva</a>
-            </li>
+            {% if request.session.token %}
+              <li>
+                <a class="dropdown-item" href="{% url 'reserva_crear' %}">Crear una nueva reserva</a>
+              </li>
+            {% endif %}
           </ul>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Servicios</a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li>
-              <a class="dropdown-item" href=""></a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Empleados</a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li>
-              <a class="dropdown-item" href=""></a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Comentarios</a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li>
-              <a class="dropdown-item" href=""></a>
-            </li>
-          </ul>
-        </li>
+        {% if request.session.token and request.session.usuario.ROL == 3 %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Servicios</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href=""></a>
+              </li>
+            </ul>
+          </li>
+        {% endif %}
+        {% if request.session.token and request.session.usuario.ROL == 3 %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Empleados</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href=""></a>
+              </li>
+            </ul>
+          </li>
+        {% endif %}
+        {% if request.session.token %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Comentarios</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href=""></a>
+              </li>
+            </ul>
+          </li>
+        {% endif %}
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Promocion</a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -91,44 +101,23 @@
           </ul>
         </li>
         <li>
-<<<<<<< HEAD
-          {% if not request.session.token %}
-            <a class="btn btn-outline-warning" href="{% url 'registrar_usuario' %}">Registrarse</a>
-          {% endif %}
-=======
           <div class="ml-2">
-            {% if not request.session.token%}
-            <a class="btn btn-outline-warning" href="{% url 'login' %}">
-                Login
-            </a>
-            {% endif %}
-    
             {% if not request.session.token %}
-              <a class="btn btn-outline-warning" href="{% url 'registrar_usuario' %}">
-                  Registrarse
-              </a>
-             {% endif %}
-    
-             {% if request.session.token %}
-             <a class="btn btn-outline-warning" href="{% url 'logout' %}">
-                 Desconectarse
-             </a>
+              <a class="btn btn-outline-warning" href="{% url 'login' %}">Login</a>
             {% endif %}
->>>>>>> 30260a79e12a7653034e3cf55e1d6132ea6c7230
+
+            {% if not request.session.token %}
+              <a class="btn btn-outline-warning" href="{% url 'registrar_usuario' %}">Registrarse</a>
+            {% endif %}
+          </div>
         </li>
-        <li>
-          {% if not request.session.token %}
-            <a class="btn btn-outline-warning" href="{% url 'login' %}">Login</a>
-          {% endif %}
-        </li>
+
         <li>
           {% if request.session.token %}
             <a class="btn btn-outline-warning" href="{% url 'logout' %}">Desconectarse</a>
-
           {% endif %}
         </li>
       </ul>
-
     </div>
   </div>
 </nav>

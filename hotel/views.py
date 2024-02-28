@@ -273,7 +273,7 @@ def reserva_editar(request,reserva_id):
     if request.method == "POST":
         datosFormulario = request.POST
     
-    reserva = helper.obtener_reserva(reserva_id)
+    reserva = helper.obtener_reserva(reserva_id,request)
 
     fecha_hora_str = reserva['fecha_entrada']
     fecha_hora_str_sin_dos_puntos = fecha_hora_str[:-3] + fecha_hora_str[-2:]
@@ -331,7 +331,7 @@ def reserva_editar_fecha(request,reserva_id):
     if request.method == "POST":
         datosFormulario = request.POST
     
-    reserva = helper.obtener_reserva(reserva_id)
+    reserva = helper.obtener_reserva(reserva_id,request)
     formulario = ReservaActualizarFechaForm(datosFormulario,
             initial={
                 'fecha_entrada': reserva['fecha_entrada'],
@@ -441,7 +441,7 @@ def cliente_editar(request,cliente_id):
     if request.method == "POST":
         datosFormulario = request.POST
     
-    cliente = helper.obtener_cliente(cliente_id)
+    cliente = helper.obtener_cliente(cliente_id,request)
     formulario = ClienteForm(datosFormulario,
             initial={
                 'nombre': cliente['nombre'],
@@ -497,7 +497,7 @@ def cliente_editar_nombre(request,cliente_id):
     if request.method == "POST":
         datosFormulario = request.POST
     
-    cliente = helper.obtener_cliente(cliente_id)
+    cliente = helper.obtener_cliente(cliente_id,request)
     formulario = ClienteActualizarNombreForm(datosFormulario,
             initial={
                 'nombre': cliente['nombre'],
@@ -558,15 +558,11 @@ def cliente_eliminar(request,cliente_id):
 
 # Habitacion
 
-@permission_required("hotel.add_habitacion")
 def Habitacion_crear(request):
     if (request.method == "POST"):
         try:
             formulario = HabitacionForm(request.POST)
-            headers =  {
-                        'Authorization': 'Bearer '+ request.session["token"],
-                        "Content-Type": "application/json" 
-                    } 
+            headers =  crear_cabecera_cliente(request)
             datos = formulario.data.copy()
             datos["numero_hab"] = request.POST.get("numero_hab");
             datos["tipo"] = request.POST.get("tipo")
@@ -610,7 +606,7 @@ def habitacion_editar(request,habitacion_id):
     if request.method == "POST":
         datosFormulario = request.POST
     
-    habitacion = helper.obtener_habitacion(habitacion_id)
+    habitacion = helper.obtener_habitacion(habitacion_id,request)
     formulario = HabitacionForm(datosFormulario,
             initial={
                 'numero_hab': habitacion['numero_hab'],
@@ -662,7 +658,7 @@ def habitacion_editar_nombre(request,habitacion_id):
     if request.method == "POST":
         datosFormulario = request.POST
     
-    habitacion = helper.obtener_habitacion(habitacion_id)
+    habitacion = helper.obtener_habitacion(habitacion_id,request)
     formulario = HabitacionActualizarNombreForm(datosFormulario,
             initial={
                 'tipo': habitacion['tipo'],

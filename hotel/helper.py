@@ -22,7 +22,7 @@ class helper:
 
     def obtener_clientes_select():
         #obtener todos los clientes
-        headers = crear_cabecera_cliente(request)
+        headers = crear_cabecera()
         response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/clientes', headers=headers)
         clientes = response.json()
         lista_clientes = [("","Ninguna")]
@@ -32,7 +32,7 @@ class helper:
 
     def obtener_habitaciones_select():
         #obtener todas las habitaciones
-        headers = crear_cabecera_cliente(request)
+        headers = crear_cabecera()
         response = requests.get(f'{env("DOMINIO")}{env("VERSION")}/habitaciones', headers=headers)
         habitaciones = response.json()
 
@@ -41,21 +41,21 @@ class helper:
             lista_habitaciones.append((habitacion['id'], habitacion['tipo']))
         return lista_habitaciones
     
-    def obtener_reserva(id):
+    def obtener_reserva(id,request):
         # obtenemos todos las reservas
         headers = crear_cabecera_cliente(request)
         response = requests.get('http://127.0.0.1:8080/api/v1/reserva/'+str(id),headers=headers)
         reserva = response.json()
         return reserva
     
-    def obtener_cliente(id):
+    def obtener_cliente(id,request):
         # obtenemos todos las clientees
         headers = crear_cabecera_cliente(request)
         response = requests.get('http://127.0.0.1:8080/api/v1/cliente/'+str(id),headers=headers)
         cliente = response.json()
         return cliente
 
-    def obtener_habitacion(id):
+    def obtener_habitacion(id,request):
         # obtenemos todos las habitaciones
         headers = crear_cabecera_cliente(request)
         response = requests.get('http://127.0.0.1:8080/api/v1/habitacion/'+str(id),headers=headers)

@@ -16,7 +16,7 @@ class BusquedaAvanzadaClienteForm(forms.Form):
 class BusquedaAvanzadaHabitacionForm(forms.Form):
     textoBusqueda = forms.CharField(required=False)
     
-    cd  = forms.IntegerField(required=False)
+    numero_hab  = forms.IntegerField(required=False)
     
     precio_noche = forms.FloatField(required=False)
 

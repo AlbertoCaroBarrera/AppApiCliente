@@ -16,6 +16,8 @@
       <h3>Telefono: {{ cliente.telefono }}</h3>
       <h3>direccion: {{ cliente.direccion }}</h3>
       {% load bootstrap_icons %}
+      {% if request.session.token and request.session.usuario.ROL == 3 %}
+
         <div class="row btn-group">
             <div class="mb-2">
                 <button type="button" 
@@ -32,6 +34,7 @@
                 </form>
             </div>
         </div>
+      {% endif %}
         <div>--------------------------------------------------------------------------------------------------------------------</div>
     {% endfor %}
   {% else %}

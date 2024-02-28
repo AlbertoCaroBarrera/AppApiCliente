@@ -11,9 +11,12 @@
       <li>{{ reserva.habitacion }}</li>
       <li>Fecha de entrada: {{ reserva.fecha_entrada }}</li>
       <li>Fecha de salida: {{ reserva.fecha_salida }}</li>
+      {% if request.session.token and request.session.usuario.ROL == 3 %}
+
       <a name="" id="" class="btn btn-primary" href="{% url 'reserva_editar' reserva.id %}" role="button">Editar Reserva</a>
       <a name="" id="" class="btn btn-primary" href="{% url 'reserva_editar_fecha' reserva.id %}" role="button">Editar tipo reserva</a>
       <a name="" id="" class="btn btn-primary" href="{% url 'reserva_eliminar' reserva.id %}" role="button" onclick="eliminar()">Eliminar Reserva</a>
+      {% endif %}
     </ul>
   {% endfor %}
 {% endblock %}

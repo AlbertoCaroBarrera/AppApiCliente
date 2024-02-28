@@ -11,9 +11,11 @@
         <p>correo: {{ cliente.correo_electronico }}</p>
         <p>telefono: {{ cliente.telefono }}</p>
         <p>direccion: {{ cliente.direccion }}</p>
+        {% if request.session.token and request.session.usuario.ROL == 3 %}
         <a name="" id="" class="btn btn-primary" href="{% url 'cliente_editar' cliente.id %}" role="button" onclick="actualizar()">Actualizar cliente</a>
         <a name="" id="" class="btn btn-primary" href="{% url 'cliente_editar_nombre' cliente.id %}" role="button" onclick="actualizar()">Actualizar nomnbre del cliente</a>
         <a name="" id="" class="btn btn-primary" href="{% url 'cliente_eliminar' cliente.id %}" role="button" onclick="eliminar()">Eliminar cliente</a>
+        {% endif %}
       </div>
       
       {% empty %}
