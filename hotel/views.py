@@ -558,11 +558,15 @@ def cliente_eliminar(request,cliente_id):
 
 # Habitacion
 
+
 def Habitacion_crear(request):
     if (request.method == "POST"):
         try:
             formulario = HabitacionForm(request.POST)
-            headers =  crear_cabecera_cliente(request)
+            headers =  {
+                        'Authorization': 'Bearer '+ request.session["token"],
+                        "Content-Type": "application/json" 
+                    } 
             datos = formulario.data.copy()
             datos["numero_hab"] = request.POST.get("numero_hab");
             datos["tipo"] = request.POST.get("tipo")
