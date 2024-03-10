@@ -1,0 +1,17 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+
+{% load bootstrap5 %}
+
+
+<h1>Mis habitaciones favoritas</h1>
+
+<ul>
+{% for habitacion_favorita in favoritos_mostrar %}
+    <li>Habitacion:{{ habitacion_favorita.habitacion }}</li>
+    {{mensaje_error}}
+{% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,22 +1,14 @@
 {% extends "principal.html" %}
 
 {% block contenido %}
-<form action = "" method = "post"> 
+<form action = "{% url 'favorito_crear' %}" method = "post"> 
     
     {% load bootstrap5 %}
     {% csrf_token %} 
-    
+
 
     <div class="mb-4">
         {% bootstrap_field formulario.habitacion show_label=True %}
-    </div>
-    
-    <div class="mb-4">
-        {% bootstrap_field formulario.fecha_entrada show_label=True %}
-    </div>
-    
-    <div class="mb-4">
-        {% bootstrap_field formulario.fecha_salida show_label=True %}
     </div>
 
     {% buttons %}

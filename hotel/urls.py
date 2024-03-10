@@ -15,6 +15,9 @@ urlpatterns = [
     
     path('cliente/eliminar/<int:cliente_id>',views.cliente_eliminar,name='cliente_eliminar'),
     
+    path('eventos/mes>',views.eventos_mes_api,name='eventos_mes_api'),
+    path('servicios', views.servicios_list, name='servicios_list'),
+    path('detalle_habitacion/<int:habitacion_id>', views.detalle_habitacion, name='detalle_habitacion'),
     
     path('habitaciones', views.habitaciones_lista_api, name='habitaciones_lista_api'),
     path('habitaciones-mejorado', views.habitaciones_lista_api_mejorada, name='habitaciones_lista_api_mejorada'),
@@ -23,7 +26,8 @@ urlpatterns = [
     path('habitacion/editar/<int:habitacion_id>',views.habitacion_editar,name='habitacion_editar'),
     path('habitacion/editar/nombre/<int:habitacion_id>',views.habitacion_editar_nombre,name='habitacion_editar_nombre'),
     path('habitacion/eliminar/<int:habitacion_id>',views.habitacion_eliminar,name='habitacion_eliminar'),
-    
+    path('favoritos/usuario',views.favoritos_lista_api,name='habitaciones_favoritas'),
+    path('favoritos/crear',views.favorito_crear,name='favorito_crear'),
     
     
     path('reservas', views.reservas_lista_api, name='reservas_lista_api'),

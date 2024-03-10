@@ -1,25 +1,86 @@
 {% extends 'principal.html' %}
-
 {% block contenido %}
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success" role="alert">{{ message }}</div>
-  {% endfor %}
-{% endif %}
-  {% for habitacion in habitaciones_lista_api %}
-    <ul>
-      <li>Numero de habitacion: {{ habitacion.numero_hab }}</li>
-      <li>Tipo de habitacion: {{ habitacion.tipo }}</li>
-      <li>Precio por noche de la habitacion: {{ habitacion.precio_noche }}</li>
-      {% if request.session.token and request.session.usuario.ROL == 3 %}
-
-      <li>
-        <a name="" id="" class="btn btn-primary" href="{% url 'habitacion_editar' habitacion.id %}" role="button">Editar habitacion</a>
-
-        <a name="" id="" class="btn btn-primary" href="{% url 'habitacion_editar_nombre' habitacion.id %}" role="button">Editar tipo habitacion</a>
-        <a name="" id="" class="btn btn-primary" href="{% url 'habitacion_eliminar' habitacion.id %}" role="button" onclick="eliminar()">Eliminar Habitacion</a>
-      </li>
-      {% endif %}
-    </ul>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success" role="alert">{{ message }}</div>
     {% endfor %}
+  {% endif %}
+  <div class="container">
+    <div class="row mb-3">
+      <div class="col">
+        <form method="get" action="{% url 'habitaciones_lista_api' %}">
+          <label for="orden">Ordenar por:</label>
+          <select class="form-control" id="orden" name="orden">
+            <option value="tipo">Tipo</option>
+            <option value="precio">Precio</option>
+          </select>
+          <button type="submit" class="btn btn-primary mt-2">Ordenar</button>
+        </form>
+      </div>
+    </div>
+    {% for habitacion in habitaciones_lista_api %}
+      <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% for img in imagenes %}
+            {% if forloop.first %}
+              <div class="carousel-item active">
+                <img src="{{ img }}" class="d-block w-100 img-fluid" alt="..." style="object-fit: cover; height: 600px;" />
+              </div>
+            {% else %}
+              <div class="carousel-item">
+                <img src="{{ img }}" class="d-block w-100 img-fluid" alt="..." style="object-fit: cover; height: 600px;" />
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Habitación {{ habitacion.numero_hab }}</h5>
+          <p class="card-text">Tipo: {{ habitacion.tipo }}</p>
+          <p class="card-text">Precio por noche: ${{ habitacion.precio_noche }}</p>
+
+          {% if rebaja %}
+            <p class="card-text text-success">¡Enhorabuena! Tienes un descuento del 10%.</p>
+            <p class="card-text">Precio con descuento: ${{ habitacion.precio_con_descuento }}</p>
+          {% else %}
+            <p class="card-text">Precio con descuento: No aplica descuento</p>
+          {% endif %}
+
+          <form method="post" action="{% url 'detalle_habitacion' habitacion.id %}">
+            {% load bootstrap5 %}
+            {% csrf_token %}
+            <div class="form-group">
+              <div class="mb-4">
+                {% bootstrap_field formulario.fecha_entrada %}
+              </div>
+
+              <div class="mb-4">
+                {% bootstrap_field formulario.fecha_salida %}
+              </div>
+              <label for="servicio">¿Desea incluir un servicio?</label>
+              <select class="form-control" id="servicio" name="servicio">
+                {% for servicio in servicios %}
+                  <option value="{{ servicio.precio }}">{{ servicio.nombre }}: {{ servicio.descripcion }}! Precio: {{ servicio.precio }}€</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary m-2">Reservar habitación</button>
+            </div>
+          </form>
+
+          {% if request.session.token and request.session.usuario.ROL == 3 %}
+            <a href="{% url 'habitacion_editar' habitacion.id %}" class="btn btn-primary">Editar habitación</a>
+            <a href="{% url 'habitacion_editar_nombre' habitacion.id %}" class="btn btn-primary">Editar tipo de habitación</a>
+            <a href="{% url 'habitacion_eliminar' habitacion.id %}" class="btn btn-danger" onclick="eliminar()">Eliminar habitación</a>
+          {% endif %}
+        </div>
+      </div>
+      {% if not forloop.last %}
+        <hr class="my-4" />
+      {% endif %}
+    {% endfor %}
+  </div>
 {% endblock %}

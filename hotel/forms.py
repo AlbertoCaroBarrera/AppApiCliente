@@ -42,18 +42,33 @@ class ReservaForm(forms.Form):
                                        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'})
                                        )
     def __init__(self,*args, **kwargs):
+        
+        self.request = kwargs.pop("request_usuario")
         super(ReservaForm,self).__init__(*args, **kwargs)
         
-        clientesDisponibles = helper.obtener_clientes_select()
+        clientesDisponibles = helper.obtener_clientes_select(self.request )
+        
         self.fields['cliente'] = forms.ChoiceField(choices=clientesDisponibles,
                                                     widget=forms.Select,
                                                     required=True)
         
-        habitacionesDisponibles = helper.obtener_habitaciones_select()
+        habitacionesDisponibles = helper.obtener_habitaciones_select(self.request )
         self.fields['habitacion'] = forms.ChoiceField(choices=habitacionesDisponibles,
                                                     widget=forms.Select,
                                                     required=True)
-        
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_entrada = cleaned_data.get("fecha_entrada")
+        fecha_salida = cleaned_data.get("fecha_salida")
+
+        if fecha_entrada and fecha_salida:
+            if fecha_entrada >= fecha_salida:
+                raise forms.ValidationError("La fecha de salida debe ser posterior a la fecha de entrada.")
+
+            if fecha_entrada < datetime.now():
+                raise forms.ValidationError("La fecha de entrada no puede ser en el pasado.")
+
+        return cleaned_data
 class ReservaActualizarFechaForm(forms.Form):
     fecha_entrada = forms.DateTimeField(label="Fecha y Hora Hasta",
                                        required=True,
@@ -108,3 +123,19 @@ class RegistroForm(UserCreationForm):
 class LoginForm(forms.Form):
     usuario = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
+    
+class FavoritoForm(forms.Form):
+    habitacion = forms.CharField(label="numero"
+                                  ,required=False)
+    
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request_usuario")
+        
+        super(FavoritoForm, self).__init__(*args, **kwargs)
+        
+        habitacionesDisponibles = helper.obtener_habitaciones_select(self.request)
+        self.fields["habitacion"] = forms.ChoiceField(
+            choices= habitacionesDisponibles,
+            required=True,
+            help_text="Mantén pulsada la tecla control para seleccionar un plato"
+        )   

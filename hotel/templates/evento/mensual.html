@@ -1,0 +1,27 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<div class="container">
+    <div class="row justify-content-center">
+        {% for evento in eventosMes %}
+        <div class="col-md-6">
+            <div class="card mb-4 m-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ evento.nombre }}</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Hora de Inicio:</strong> {{ evento.hora_inicio }}</li>
+                        <li class="list-group-item"><strong>Hora Final:</strong> {{ evento.hora_final }}</li>
+                        <li class="list-group-item"><strong>Ubicación:</strong> {{ evento.ubicacion }}</li>
+                        <li class="list-group-item"><strong>Reservas:</strong></li>
+                        <ul class="list-group list-group-flush">
+                            {% for reserva_evento in evento.reserva_evento.all %}
+                            <li class="list-group-item">{{ reserva_evento.reserva }}</li>
+                            {% endfor %}
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock contenido %}

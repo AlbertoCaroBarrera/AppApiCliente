@@ -5,18 +5,21 @@
     <div class="alert alert-success" role="alert">{{ message }}</div>
   {% endfor %}
 {% endif %}
+<div class="container mt-4 mb-4">
   {% for reserva in reservas_mostrar %}
-    <ul>
-      <li>{{ reserva.cliente }}</li>
-      <li>{{ reserva.habitacion }}</li>
-      <li>Fecha de entrada: {{ reserva.fecha_entrada }}</li>
-      <li>Fecha de salida: {{ reserva.fecha_salida }}</li>
+    <ul class="list-group">
+      <li class="list-group-item"><strong>Nombre del cliente: {{ nombre }}</strong></li>
+      <li class="list-group-item">Numero de la habitacion reservada: {{ reserva.habitacion }}</li>
+      <li class="list-group-item">Fecha de entrada: {{ reserva.fecha_entrada }}</li>
+      <li class="list-group-item">Fecha de salida: {{ reserva.fecha_salida }}</li>
       {% if request.session.token and request.session.usuario.ROL == 3 %}
-
-      <a name="" id="" class="btn btn-primary" href="{% url 'reserva_editar' reserva.id %}" role="button">Editar Reserva</a>
-      <a name="" id="" class="btn btn-primary" href="{% url 'reserva_editar_fecha' reserva.id %}" role="button">Editar tipo reserva</a>
-      <a name="" id="" class="btn btn-primary" href="{% url 'reserva_eliminar' reserva.id %}" role="button" onclick="eliminar()">Eliminar Reserva</a>
+        <li class="list-group-item">
+          <a href="{% url 'reserva_editar' reserva.id %}" class="btn btn-primary">Editar Reserva</a>
+          <a href="{% url 'reserva_editar_fecha' reserva.id %}" class="btn btn-primary">Editar tipo reserva</a>
+          <a href="{% url 'reserva_eliminar' reserva.id %}" class="btn btn-primary" onclick="eliminar()">Eliminar Reserva</a>
+        </li>
       {% endif %}
     </ul>
   {% endfor %}
+</div>
 {% endblock %}

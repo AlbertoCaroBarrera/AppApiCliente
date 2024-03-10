@@ -1,0 +1,15 @@
+{% extends 'principal.html' %}
+
+{% block contenido %}
+  <div class="container">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h1 class="card-title alert alert-success">Habitación Reservada!</h1>
+        <h5 class="card-title">Habitación {{ habitacion.numero_hab }}</h5>
+        <p class="card-text">Tipo: {{ habitacion.tipo }}</p>
+        <p class="card-text">Precio por noche: {{ habitacion.precio_noche }}€</p>
+        <p class="card-text">Precio final: {{ precio_final }}€</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

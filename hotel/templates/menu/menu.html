@@ -1,15 +1,26 @@
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 d-flex justify-content-evenly">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 d-flex">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Inicio</a>
         </li>
+        {% if request.session.token %}
         <li class="nav-item dropdown">
+          
+
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Habitacion</a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li>
               <a class="dropdown-item" href="{% url 'habitaciones_lista_api' %}">Lista de habitaciones</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'habitaciones_favoritas' %}">Lista de habitaciones favoritas</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'favorito_crear' %}">Añadir habitaciones favoritas</a>
             </li>
 
             <li>
@@ -22,7 +33,10 @@
             {% endif %}
           </ul>
         </li>
+        {%endif%}
         {% if request.session.token and request.session.usuario.ROL == 3 %}
+        {% if request.session.token %}
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Clientes</a>
 
@@ -45,6 +59,9 @@
             </ul>
           </li>
         {% endif %}
+        {% endif %}
+        {% if request.session.token %}
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Reservas</a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -61,58 +78,43 @@
             {% endif %}
           </ul>
         </li>
-        {% if request.session.token and request.session.usuario.ROL == 3 %}
+        {% if request.session.token and request.session.usuario.ROL == 2 %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Servicios</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Eventos</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li>
-                <a class="dropdown-item" href=""></a>
-              </li>
-            </ul>
-          </li>
-        {% endif %}
-        {% if request.session.token and request.session.usuario.ROL == 3 %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Empleados</a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li>
-                <a class="dropdown-item" href=""></a>
-              </li>
-            </ul>
-          </li>
-        {% endif %}
-        {% if request.session.token %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Comentarios</a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li>
-                <a class="dropdown-item" href=""></a>
+                <a class="dropdown-item" href="{% url 'eventos_mes_api' %}">Eventos del mes siguiente</a>
               </li>
             </ul>
           </li>
         {% endif %}
 
+        {% endif %}
+
+        {% if request.session.token %}
+
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Promocion</a>
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Servicios</a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li>
-              <a class="dropdown-item" href=""></a>
+              <a class="dropdown-item" href="{% url 'servicios_list' %}">Mostrar servicios</a>
             </li>
           </ul>
         </li>
-        <li>
-          <div class="ml-2">
-            {% if not request.session.token %}
-              <a class="btn btn-outline-warning" href="{% url 'login' %}">Login</a>
-            {% endif %}
-
-            {% if not request.session.token %}
-              <a class="btn btn-outline-warning" href="{% url 'registrar_usuario' %}">Registrarse</a>
-            {% endif %}
-          </div>
+      </ul>
+      {% endif %}
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          {% if not request.session.token %}
+            <a class="btn btn-outline-warning" href="{% url 'login' %}">Login</a>
+          {% endif %}
         </li>
-
-        <li>
+        <li class="nav-item">
+          {% if not request.session.token %}
+            <a class="btn btn-outline-warning" href="{% url 'registrar_usuario' %}">Registrarse</a>
+          {% endif %}
+        </li>
+        <li class="nav-item">
           {% if request.session.token %}
             <a class="btn btn-outline-warning" href="{% url 'logout' %}">Desconectarse</a>
           {% endif %}

@@ -1,16 +1,22 @@
 {% extends "principal.html" %}
+
 {% block contenido %}
-
-    {% for servicio in servicios %}
-        <h1>Servicio:</h1>
-        <ul>
-            <li>Nombre del servicio: {{servicio.nombre}}</li>
-            <li>Descripcion del servicio: {{servicio.descripcion}} </li>
-            <li>Precio del servicio: {{servicio.precio}} </li>
-        </ul>
-        
-        {% empty %}
-        <h1>Lo sentimos pero no hay servicios</h1>
+<div class="container">
+    {% for servicio in servicios_mostrar %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Servicio: {{ servicio.nombre }}</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Descripción: {{ servicio.descripcion }}</li>
+                <li class="list-group-item">Precio: {{ servicio.precio }}</li>
+            </ul>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Lo sentimos, pero no hay servicios disponibles.</h4>
+        <p class="mb-0">Por favor, inténtalo de nuevo más tarde.</p>
+    </div>
     {% endfor %}
-
+</div>
 {% endblock contenido %}
